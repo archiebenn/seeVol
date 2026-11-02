@@ -2,3 +2,4 @@ uv-cheatsheet.md
 .venv
 /build
 *.npy
+.DS_Store
