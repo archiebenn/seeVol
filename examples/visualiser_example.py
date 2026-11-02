@@ -5,7 +5,7 @@
 import seevol
 
 # create example NumPy volume with excavator
-example_nest = seevol.tunnel_excavator(size=120, seed=8, n_steps=45000, branch_prob=0.0001, radius=1)
+example_nest = seevol.tunnel_excavator(size=180, seed=14, n_steps=18000, branch_prob=1e-5, radius=1)
 
 # view visibility in pyvista window
 seevol.visibility_visualiser(example_nest, verbose=True)

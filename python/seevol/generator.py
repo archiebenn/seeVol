@@ -5,7 +5,7 @@
 import numpy as np
 import random
 
-def tunnel_excavator(size = 100, n_steps = 20000, branch_prob = 0.001, radius = 1, seed=0):
+def tunnel_excavator(size = 100, n_steps = 20000, branch_prob = 1e-5, radius = 1, seed=0):
     """
     Creates empty grid volume (default volume 100^3 voxels).
 
