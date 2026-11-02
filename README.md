@@ -6,9 +6,12 @@
 
 `seevol` analyses line-of-sight visibility in 3D binary volumes, where 0 represents a solid/opaque voxel, and 1 represents open/transparent voxels. 
 
-The core functionality is based on the Amanatides & Woo voxel traversal algorithm <sup>1</sup> pair visibility and is implemented in C++ to compute straight line visibility between all pairs of open (non solid) voxels in a given volume.  
+The core functionality is based on the Amanatides & Woo voxel traversal algorithm <sup>1</sup> and is implemented in C++ to compute straight line visibility between all pairs of open (non solid) voxels in a given volume.  
 
-This tool tests visibility between all open pairs throughout the volume, allowing per-voxel visibility analysis metrics to be calculated downstream for every open voxel.
+This tool tests visibility between **all** open pairs throughout the volume, which permits per-voxel visibility analysis metrics to be calculated downstream for every open voxel.
+
+> [!WARNING]
+> `seevol` computes all-pairs visibility, which scales as O(open_voxels<sup>2</sup>). This becomes slow or memory-limiting beyond a few hundred thousand open voxels — see [Limitations](#limitations) before running on large volumes. Downsampling the volume is likely to help but will impact results.  
 
 ## Dependencies
 
@@ -32,18 +35,20 @@ uv pip install seevol
 
 ## Usage
 
-The core function `visible_pairs()` accepts a 3D binary (0 = solid, 1 = open) NumPy array as input and outputs two NumPy arrays: one containing the open voxel coordinates within the volume with shape (N, 3) called 'coords', and another with visible pair indices with shape(M, 2) called 'edges' and which refers to rows in 'coords'. (For example, if `edges[0]` is `[2, 7]`, the visibility edge connects `coords[2]` and `coords[7]` and these two voxels are visible to each other).  
+The core function `visible_pairs()` accepts a 3D binary (0 = solid, 1 = open) NumPy array as input and outputs two NumPy arrays:
 
-Users can load .npy files in Python using `np.load()`, and this can then be passed to `visible_pairs()`.  
+- `coords` — shape (N, 3), the open voxel coordinates in the volume  
+- `edges` — shape (M, 2), pairs of indices into `coords` for voxels that are mutually visible  
+
+For example, if `edges[0]` is `[2, 7]`,the visibility edge connects `coords[2]` and `coords[7]` and these two voxels are visible to each other via direct line of sight.  
+
+Users can load .npy files in Python using `np.load()` and pass the result to `visible_pairs()`.  
 
 Downstream analyses or visualisations are then possible from this output, such as visualising a 'visibility heatmap' using Pyvista (see below) 
 
 ## Limitations  
 
-This tool currently uses all-pair calculation using voxel ray traversal. Because of this, the ray traversal algorithm scales with O(open_voxels^2), and is therefore quickly unusable for large volumes.  
-
-> [!IMPORTANT]
-> Volumes with high open voxel counts will run very slowly or fail due to memory limits. Try and downsample the volume, although this will impact results.
+This tool currently uses all-pair calculation using voxel ray traversal. Because of this, the ray traversal algorithm scales as O(open_voxels<sup>2</sup>) and is therefore quickly unusable for large volumes.  
 
 A hard limit is imposed in the C++ source file which limits open voxels to 1,000,000. In reality, volumes with over 500,000 open voxels are likely to significant memory issues as very large visible edges will be stored. Methods to reduce this runtime will hopefully be introduced over time.
 
@@ -95,7 +100,7 @@ print(f"{len(coords)} open voxels containing {len(edges)} visible pairs")
 
 ## Visualisation examples on large artificial volumes
 
-Below shows an example output of the visibility score per voxel as a heatmap within an intricate 150x150x150 volume, generated using `tunnel_excavator()` to mimic an ant nest structure and visualised with Pyvista using `visibility_visualiser()`:  
+Below shows an example output of the visibility score per voxel as a heatmap within an intricate 150x150x150 volume, generated using `tunnel_excavator()` to mimic an ant-nest structure and visualised with Pyvista using `visibility_visualiser()`:  
 
 ![150_cubed](images/realistic_nest.png "150^3 ant excavation example volume")
 
