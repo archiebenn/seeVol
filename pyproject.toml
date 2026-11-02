@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "seevol"
-version = "0.1.1"
+version = "0.1.2"
 authors = [
   { name="Archie Benn", email="sj19031@bristol.ac.uk" },
 ]
@@ -25,7 +25,7 @@ Repository = "https://github.com/archiebenn/seeVol"
 
 [tool.scikit-build]
 wheel.packages = ["src/seevol"]
-sdist.exclude = ["tests", "development_log.md", "uv-cheatsheet.md"]
+sdist.exclude = ["benchmarks", "initial_trials", "development_log.md"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

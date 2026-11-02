@@ -1,8 +1,11 @@
 uv-cheatsheet.md
-__pycache__
 .venv
-/build
 initial_trials/
 *.npy
 .DS_Store
 benchmarks/
+dist/
+__pycache__/
+*.pyc
+build/
+*.egg-info/
