@@ -37,7 +37,7 @@ dev = [
 
 [tool.cibuildwheel]
 build = "cp310-* cp311-* cp312-* cp313-*"
-skip = "*-musllinux*"  
+skip = "*-musllinux* *-manylinux_i686*"
 
 [tool.cibuildwheel.macos]
 before-all = "brew install libomp"
