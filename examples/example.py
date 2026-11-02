@@ -2,11 +2,10 @@
 # date: 02-11-2026
 # author: Archie Benn sj19031@bristol.ac.uk
 
-from generator import tunnel_excavator
-from visualiser import visibility_visualiser 
+import seevol
 
-# create example nest with excavator
-example_nest = tunnel_excavator(size=150, seed=45, n_steps=15000, branch_prob=0.0001, radius=1)
+# create example NumPy volume with excavator
+example_nest = seevol.tunnel_excavator(size=150, seed=9, n_steps=20000, branch_prob=0.0001, radius=1)
 
-# view in pyvista window
-visibility_visualiser(example_nest, verbose=True)
+# view visibility in pyvista window
+seevol.visibility_visualiser(example_nest, verbose=True)
