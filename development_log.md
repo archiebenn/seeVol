@@ -49,19 +49,19 @@ Date started: 26-10-2026
 
 - generated `intricate_volumes.py` which uses `random` module and a set of defined rules to excavate out random volumes from a set full volume size
 - the idea is to generate some intricate test volumes which are similar to ant nests for the development of the visibility graph  
-- e.g here is an excavated volume, visualised in `pyvista`, from:
+- e.g here is a 200x200x200 excavated volume, visualised in `pyvista`, from:
   ```
   c = tunnel_excavater(size=200, seed=3, n_steps=200000, branch_prob=0.0001, radius=1)
   ```
   
-![alt text](https://github.com/archiebenn/wise-pears/images/test_200cubed.png "Test 200^3 excavated volume")
+![alt text](https://github.com/archiebenn/wise-pears/blob/main/images/test_200cubed.png "Test 200^3 excavated volume")
 
-- got the is_visible function for a single pair visibility using Amanatides & Woo algorithm in `woo_test.cpp` working  
+- got the core `is_visible()` function for a single pair visibility using Amanatides & Woo algorithm in `woo_test.cpp` working  
 - then developed the main visible_pairs function which loops over every set of open voxel pairs (in one direction only) and tests with is_visible, returning a Nx3 array of open voxel coords and a Mx2 array of visible pair indices for that Nx3 array  
 - this will allow both the visualisation with `pyvista` and the development ot `networkx` visibility graphs to be worked on, as the coordinates of each voxel and the visibility to each other open voxel from that one is saved  
 - started on a test run for colouring `pyvista` outputs by a visibility score. here is an example on a 100^3 volume:  
 
-![alt text](https://github.com/archiebenn/wise-pears/images/pyvista_100cubed.png "Test 200^3 excavated volume")
+![alt text](https://github.com/archiebenn/wise-pears/blob/main/images/pyvista_100cubed.png "Test 200^3 excavated volume")
 
 
 - also did some benchmarking timings and got upt to around 70s for the 100^3 volume  
@@ -100,7 +100,7 @@ Python: 18.12656s  (82x slower)
 - changed it to render the maximum visibility score from each 'viewing angle' in `pyvista` and it is much clearer too  
 - also added wireframe mesh around each open voxel  
 
-![alt text](https://github.com/archiebenn/wise-pears/images/porespy.png "64^3 Porespy example volume")
+![alt text](https://github.com/archiebenn/wise-pears/blob/main/images/porespy.png "64^3 Porespy example volume")
 
 
 - had thoughts over the weekend and think i will try to apply octree and also some radius bounds for checking rays  
