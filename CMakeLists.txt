@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(pybind11 REQUIRED)
 
 # create module from .cpp
-pybind11_add_module(voxel_occlusion src/occlusion.cpp)
+pybind11_add_module(voxel_occlusion src/seevol/occlusion.cpp)
 
 # for multi-threading the hot loop in is_visible:
 # macOS: auto-locate Homebrew's libomp (no-op elsewhere)

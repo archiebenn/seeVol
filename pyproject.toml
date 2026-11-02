@@ -5,19 +5,26 @@ build-backend = "scikit_build_core.build"
 [project]
 name = "seevol"
 version = "0.1.0"
-description = "All-pairs visibility analyses on voxel volumes (Amanatides & Woo, C++)"
+authors = [
+  { name="Archie Benn", email="sj19031@bristol.ac.uk" },
+]
+description = "All-pairs visibility analysis on voxel volumes (Amanatides & Woo, C++)"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
-authors = [{ name = "Archie Benn" }]
 requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: C++",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
 dependencies = ["numpy", "pyvista"]
 
 [project.urls]
 Repository = "https://github.com/archiebenn/seeVol"
 
 [tool.scikit-build]
-wheel.packages = ["python/seevol"]
+wheel.packages = ["src/seevol"]
 sdist.exclude = ["tests", "development_log.md", "uv-cheatsheet.md"]
 
 [tool.pytest.ini_options]
