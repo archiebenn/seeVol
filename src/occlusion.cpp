@@ -5,7 +5,6 @@ Date started: 26-10-2026
 Author: Archie Benn sj19031@bristol.ac.uk
 */  
 
-#include <omp.h>
 #include <atomic>
 #include <iostream>
 #include <vector>

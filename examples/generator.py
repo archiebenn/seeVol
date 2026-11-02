@@ -1,4 +1,4 @@
-# volume_generator.py - generates carved volumes to simulate ant nest excavations and intricate structures
+# generator.py - generates example volumes to simulate ant nest excavations and intricate structures
 # date: 28-10-2026  
 # author: Archie Benn sj19031@bristol.ac.uk 
 
@@ -72,24 +72,3 @@ def tunnel_excavator(size = 100, n_steps = 20000, branch_prob = 0.02, radius = 1
                 heads.append((nx,ny,nz))
 
     return vol
-
-
-if __name__ == "__main__":
-
-    # .npy volume directory 
-    data_dir = Path(__file__).resolve().parent / "volumes"
-    data_dir.mkdir(exist_ok=True)
-
-    # tunnel networks are all connected (single random-walk origin, branches only spawn from excavated voxels)
-    # add new nest volumes below, or adapt existing   
-    a = tunnel_excavator(size=100, seed=65, n_steps=20000, branch_prob=0.0001, radius=1)
-    b = tunnel_excavator(size=20, seed=8, n_steps=500, branch_prob=0.0001, radius=0)
-    c = tunnel_excavator(size=150, seed=6, n_steps=25000, branch_prob=0.0001, radius=1)
-
-    np.save(data_dir / "nest.npy", a)
-    np.save(data_dir / "small_nest.npy", b)
-    np.save(data_dir / "large_nest.npy", c)
-
-    print(f"nest.npy: {a.sum()} open voxels of {a.size} ({100*a.sum()/a.size:.2f}%)")
-    print(f"small_nest.npy: {b.sum()} open voxels of {b.size} ({100*b.sum()/b.size:.2f}%)")
-    print(f"large_nest.npy: {c.sum()} open voxels of {c.size} ({100*c.sum()/c.size:.2f}%)")
