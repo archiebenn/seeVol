@@ -14,5 +14,4 @@ volume[1, 1, 1] = 0
 # calculate pairwise voxel visibility
 coords, edges = seevol.visible_pairs(volume)
 
-print(f"{len(coords)} open voxels")
-print(f"{len(edges)} visible pairs")
+print(f"{len(coords)} open voxels containing {len(edges)} visible pairs")

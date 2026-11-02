@@ -1,34 +1,51 @@
 # seeVol
 
-`seevol` is a tool for 3D binary volumes (0 = solid, 1 = open) stored as NumPy arrays. The core functionality is based on the Amanatides & Woo voxel traversal algorithm (1), and implemented in C++ to compute straight line visibility between all pairs of open voxels in a provided volume.  
+<p align="center">
+  <img src="images/readme_banner.png" alt="3D visualisation of an artificial ant nest volume coloured by voxel visibility" width="800">
+</p>
 
-The main function `visible_pairs()` outputs two NumPy arrays: one containing the open voxel coordinates within the volume (coords: N, 3) and another with visible pair indices (edges: M, 2) which refer to rows in coords. (For example, if `edges[0]` is `[2, 7]`, the visibility edge connects `coords[2]` and `coords[7]` and these two voxels are visible to each other).  
+`seevol` analyses line-of-sight visibility in 3D binary volumes, where 0 represents a solid/opaque voxel, and 1 represents open/transparent voxels. 
 
-Downstream analyses or visualisations are then possible from this output, such as visualising a 'visibility heatmap' using `pyvista` (see below)  
+The core functionality is based on the Amanatides & Woo voxel traversal algorithm <sup>1</sup> pair visibility and is implemented in C++ to compute straight line visibility between all pairs of open (non solid) voxels in a given volume.  
+
+This tool tests visibility between all open pairs throughout the volume, allowing per-voxel visibility analysis metrics to be calculated downstream for every open voxel.
 
 ## Dependencies
 
-A C++ build toolchain is required for source installation (C++17 or above)  
+A C++17 or greater build toolchain is required for source installation, alongside Python >=3.10.  
+
+Pyvista is a dependency for visualisations of the visibility metrics output onto the 3D volume itself (see [this visual example](examples/visualiser_example.py) for use).
 
 ## Installation
 
-To install `seevol`, run:  
+To install seevol:
 
-```
+```bash
 pip install seevol
 ```
 
-or for `uv` users:
+or for uv users:
 
-```
+```bash
 uv pip install seevol
 ```
+
+## Usage
+
+The core function `visible_pairs()` accepts a 3D binary (0 = solid, 1 = open) NumPy array as input and outputs two NumPy arrays: one containing the open voxel coordinates within the volume with shape (N, 3) called 'coords', and another with visible pair indices with shape(M, 2) called 'edges' and which refers to rows in 'coords'. (For example, if `edges[0]` is `[2, 7]`, the visibility edge connects `coords[2]` and `coords[7]` and these two voxels are visible to each other).  
+
+Users can load .npy files in Python using `np.load()`, and this can then be passed to `visible_pairs()`.  
+
+Downstream analyses or visualisations are then possible from this output, such as visualising a 'visibility heatmap' using Pyvista (see below) 
 
 ## Limitations  
 
 This tool currently uses all-pair calculation using voxel ray traversal. Because of this, the ray traversal algorithm scales with O(open_voxels^2), and is therefore quickly unusable for large volumes.  
 
-A hard limit is imposed in the C++ source file which limits open voxels to 1,000,000. In reality, over 500,000 open voxels will likely cause a slowdown as this runs on CPU, and methods to reduce this runtime will hopefully be introduced over time.
+> [!IMPORTANT]
+> Volumes with high open voxel counts will run very slowly or fail due to memory limits. Try and downsample the volume, although this will impact results.
+
+A hard limit is imposed in the C++ source file which limits open voxels to 1,000,000. In reality, volumes with over 500,000 open voxels are likely to significant memory issues as very large visible edges will be stored. Methods to reduce this runtime will hopefully be introduced over time.
 
 ## Minimal example
 
@@ -47,19 +64,48 @@ volume[1, 1, 1] = 0
 # calculate pairwise voxel visibility
 coords, edges = seevol.visible_pairs(volume)
 
-print(f"{len(coords)} open voxels")
-print(f"{len(edges)} visible pairs")
+print(f"{len(coords)} open voxels containing {len(edges)} visible pairs")
 ```
 
 It prints the number of open voxels and visible pairs:
 
 ```
-26 open voxels
-214 visible pairs
+26 open voxels containing 214 visible pairs
 ```
 
-## Visualisation example on a large volume
+### Using .npy files 
 
-![150_cubed](https://github.com/archiebenn/wise-pears/blob/main/images/realistic_nest.png "150^3 ant excavation example volume")
+> [!IMPORTANT]
+> NumPy array volumes as .npy files must be 3D and contain binary values, with 0 = solid and 1 = open voxels.
+
+To import your own 3D NumPy volume and calculate visibility as with the above example:
+
+```python
+import numpy as np
+import seevol 
+
+# load your own 3D NumPy volume: 0 = solid, 1 = open
+volume = np.load("my_volume.npy")
+
+# calculate pairwise voxel visibility
+coords, edges = seevol.visible_pairs(volume)
+
+print(f"{len(coords)} open voxels containing {len(edges)} visible pairs")
+```
+
+## Visualisation examples on large artificial volumes
+
+Below shows an example output of the visibility score per voxel as a heatmap within an intricate 150x150x150 volume, generated using `tunnel_excavator()` to mimic an ant nest structure and visualised with Pyvista using `visibility_visualiser()`:  
+
+![150_cubed](images/realistic_nest.png "150^3 ant excavation example volume")
+
+A visibility scored volume using a generated `porespy` volume:
+
+![150_cubed](images/porespy.png "150^3 ant excavation example volume")
+
+
+## References
+
+> 1. Amanatides, J., & Woo, A. (1987, August). A fast voxel traversal algorithm for ray tracing. In Eurographics (Vol. 87, No. 3, pp. 3-10).
 
 
