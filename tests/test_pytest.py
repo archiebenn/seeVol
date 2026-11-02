@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 from itertools import combinations, product
 from fractions import Fraction
-from seevol.ray_occlusion_cpp import is_visible, visible_pairs
+from seevol.voxel_occlusion import is_visible, visible_pairs
 
 # check 5^3 fully open/1 volume 
 def test_open_volume_visible():

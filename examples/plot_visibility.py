@@ -1,4 +1,4 @@
-# pyvista_example.py - view pyvista example outputs coloured buy voxel visibility scores 
+# plot_visibility.py - view pyvista example outputs coloured by voxel visibility scores 
 # date: 28-10-2026
 # author: Archie Benn sj19031@bristol.ac.uk 
 
@@ -6,20 +6,10 @@ import numpy as np
 import time
 import pyvista as pv
 from pathlib import Path
-from seevol.ray_occlusion_cpp import visible_pairs
+from volume_generator import tunnel_excavator
+from seevol.voxel_occlusion import visible_pairs
 
-# get data directory  
-data_dir = Path(__file__).resolve().parent / "volumes"
-
-# load in generated example nest volume .npys
-small_nest = np.load(data_dir / "small_nest.npy")
-medium_nest = np.load(data_dir / "nest.npy")
-large_nest = np.load(data_dir / "large_nest.npy")
-porespy = np.load(data_dir / "porespy.npy")
-stanford_bunny = np.load(data_dir / "bunny.npy")
-
-
-def visibility_visualiser(vol):
+def visibility_visualiser(vol, verbose=False):
     """
     Takes a volume in .npy format with binary voxel values of 0 or 1 (0 = solid, 1 = open).  
 
@@ -30,9 +20,15 @@ def visibility_visualiser(vol):
 
     t0_build = time.perf_counter()
 
+    if verbose == True:
+        print(f"Volume information: {vol.sum()} open voxels of {vol.size} ({100*vol.sum()/vol.size:.2f}%)") 
+
     # run main C++ Amanatides & Woo algorithm for ray tracing and visibility checking all open voxel pairs  
     t0_cpp = time.perf_counter()
-    coords, edges = visible_pairs(vol)
+    if verbose == True:
+        coords, edges = visible_pairs(vol, verbose=True)
+    else:
+        coords, edges = visible_pairs(vol)
     t_cpp = time.perf_counter() - t0_cpp
 
     n = len(coords)
@@ -85,14 +81,16 @@ def visibility_visualiser(vol):
 
     t_build = time.perf_counter() - t0_build
 
-    print(f"Open voxels: {n}, rays cast: {n_rays:,}, visible pairs: {len(edges):,}")
-    print(f"Time in C++ 'hot loop': {t_cpp:.5f}s")
-    print(f"Average time per ray: {t_cpp / n_rays * 1e6:.5f} µs")
-    print(f"Total time before render: {t_build:.3f}s")
+    if verbose == True:
+        print(f"Open voxels: {n}, rays cast: {n_rays:,}, visible pairs: {len(edges):,}")
+        print(f"Time in C++ 'hot loop': {t_cpp:.5f}s")
+        print(f"Average time per ray: {t_cpp / n_rays * 1e6:.5f} µs")
+        print(f"Total time before render: {t_build:.3f}s")
 
     # show pyvista render in window
     p.camera_position = 'zy'
     p.show()
 
-
-visibility_visualiser(large_nest)
+# run excavator and view
+example_nest = tunnel_excavator(size=150, seed=2, n_steps=15000, branch_prob=0.0001, radius=1)
+visibility_visualiser(example_nest, verbose=True)

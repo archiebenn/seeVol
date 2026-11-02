@@ -8,8 +8,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # require pybind  
 find_package(pybind11 REQUIRED)
 
-# create occlusion_cpp module from .cpp
-pybind11_add_module(ray_occlusion_cpp tests/amanatides-woo_test.cpp)
+# create module from .cpp
+pybind11_add_module(voxel_occlusion src/occlusion.cpp)
 
 # for multi-threading the hot loop in is_visible:
 # macOS: auto-locate Homebrew's libomp (no-op elsewhere)
@@ -24,10 +24,10 @@ if(APPLE)
 endif()
 find_package(OpenMP)
 if(OpenMP_CXX_FOUND)
-    target_link_libraries(ray_occlusion_cpp PRIVATE OpenMP::OpenMP_CXX)
+    target_link_libraries(voxel_occlusion PRIVATE OpenMP::OpenMP_CXX)
 else()
     message(WARNING "OpenMP not found: building serial (non-threaded and slower) version. Please install!")
 endif()
 
-# once compiled so an .so, add to the wise_pears package folder  
-install(TARGETS ray_occlusion_cpp DESTINATION seevol)
+# once compiled so an .so, add to the seevol package folder  
+install(TARGETS voxel_occlusion DESTINATION seevol)

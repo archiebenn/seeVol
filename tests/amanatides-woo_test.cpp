@@ -1,4 +1,4 @@
-/* woo_test.cpp - small scale testing of ray-tracing  
+/* woo.cpp - small scale testing of ray-tracing  
 based on an algorithm from "Amanatides, J. & Woo, A. A Fast Voxel Traversal Algorithm for Ray Tracing."  
 guide for algorithm and implementation: https://m4xc.dev/articles/amanatides-and-woo/  
 date started: 26-10-2026  
@@ -137,7 +137,7 @@ bool is_visible_py(pybind11::array_t<uint8_t> volume, int x0, int y0, int z0, in
  * @param volume numpy np.uint8 data type
  * @return pair of: (N x 3 int array of free voxel coordinates, M x 2 int array of visible index pairs)
  */
-std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visible_pairs(pybind11::array_t<uint8_t> volume){
+std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visible_pairs(pybind11::array_t<uint8_t> volume, bool verbose){
 
     // .unchecked<3>() gives fast volume(x,y,z) access to the numpy array
     // update to is_visible (29-10-26) means that this is the only time accessor is built now
@@ -179,7 +179,7 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visible_pairs(pybind11
     // this is the main loop which walks through every voxel pair (i, j) and tests occlusion using is_visible
     {
 
-        std::cout << "RUNNING C++ VOXEL RAY-CASTING...\n";
+        if (verbose) std::cout << "RUNNING C++ VOXEL RAY-CASTING...\n";
 
         // atomic long long counter (for terminal completion) - atomic means no two threads can increment at same time
         std::atomic<long long> completed{0};
@@ -223,12 +223,12 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visible_pairs(pybind11
                 // a little completion bar for this hot loop to the terminal 
                 long long done = ++completed;
                 // print every 2500th voxel pair completed
-                if (done % 2500 == 0) {
+                if (verbose && done % 2500 == 0) {
                     double frac = (double)done / (double)n;
                     // how many #s to show
                     int filled = (int)(frac * 40);
                     // \r overwrites previous output and then std::flushg sends straight to terminal  
-                    std::cout << "\r[" << std::string(filled, '#') << std::string(40 - filled, '-')
+                    if (verbose) std::cout << "\r[" << std::string(filled, '#') << std::string(40 - filled, '-')
                     << "] " << (int)(frac * 100) << "%" << std::flush;
                 }
             }
@@ -242,7 +242,7 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visible_pairs(pybind11
     // ****HOT LOOP END****
 
     // 100% completion to terminal
-    std::cout << "\r[" << std::string(40, '#') << "] 100%\n";
+    if (verbose) std::cout << "\r[" << std::string(40, '#') << "] 100%\n";
 
     // threads finish in nondeterministic order, so sort to get the same output every run
     std::sort(edges.begin(), edges.end());
@@ -270,10 +270,13 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visible_pairs(pybind11
     return {coords, edge_arr};
 }
 
-// pybind module - (occlusion_cpp must match name in CMakeLists.txt)  
+// pybind module - (ray_occlusion_cpp must match name in CMakeLists.txt)  
 PYBIND11_MODULE(ray_occlusion_cpp, m) {
     m.def("get_voxel_value", &get_voxel_value, "Return voxel value (0 or 1) from numpy array (3D volume)");
     m.def("is_visible", &is_visible_py, "Return whether a single voxel pair has line of sight");
-    m.def("visible_pairs", &visible_pairs, "Computes all visible voxel pairs in a volume and returns Nx3 int array of open voxel coordinates as well a linked Mx2 array of visible index pairs");
+    m.def("visible_pairs", &visible_pairs, 
+      pybind11::arg("volume"),
+      pybind11::arg("verbose") = false,
+      "Computes all visible voxel pairs in a volume and returns Nx3 int array of open voxel coordinates as well a linked Mx2 array of visible index pairs");
 }
 
