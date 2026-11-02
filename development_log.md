@@ -54,14 +54,14 @@ Date started: 26-10-2026
   c = tunnel_excavater(size=200, seed=3, n_steps=200000, branch_prob=0.0001, radius=1)
   ```
   
-![alt text](https://github.com/archiebenn/wise-pears/examples/images/test_200cubed.png "Test 200^3 excavated volume")
+![alt text](https://github.com/archiebenn/wise-pears/images/test_200cubed.png "Test 200^3 excavated volume")
 
 - got the is_visible function for a single pair visibility using Amanatides & Woo algorithm in `woo_test.cpp` working  
 - then developed the main visible_pairs function which loops over every set of open voxel pairs (in one direction only) and tests with is_visible, returning a Nx3 array of open voxel coords and a Mx2 array of visible pair indices for that Nx3 array  
 - this will allow both the visualisation with `pyvista` and the development ot `networkx` visibility graphs to be worked on, as the coordinates of each voxel and the visibility to each other open voxel from that one is saved  
 - started on a test run for colouring `pyvista` outputs by a visibility score. here is an example on a 100^3 volume:  
 
-![alt text](https://github.com/archiebenn/wise-pears/examples/images/pyvista_100cubed.png "Test 200^3 excavated volume")
+![alt text](https://github.com/archiebenn/wise-pears/images/pyvista_100cubed.png "Test 200^3 excavated volume")
 
 
 - also did some benchmarking timings and got upt to around 70s for the 100^3 volume  
@@ -99,7 +99,12 @@ Python: 18.12656s  (82x slower)
 - worked a bit on the actual render and decided to switch back to `pyvista` from `napari` as it is actually better  
 - changed it to render the maximum visibility score from each 'viewing angle' in `pyvista` and it is much clearer too  
 - also added wireframe mesh around each open voxel  
+
+![alt text](https://github.com/archiebenn/wise-pears/images/porespy.png "64^3 Porespy example volume")
+
+
 - had thoughts over the weekend and think i will try to apply octree and also some radius bounds for checking rays  
 - radius bounds should theoretically allow much larger voxel counst to be checked as will stop it being O(n^2)  
 - this is the current bottleneck as it limits any larger nests over like 125x125x125 currently  
 - however memory issue may also be a bottleneck as currently storing 2 arrays (Nx3, Mx2) for all visible pairs and coords in C++ function  
+
