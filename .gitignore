@@ -1,5 +1,6 @@
 uv-cheatsheet.md
 .venv
 /build
+initial_trials/
 *.npy
 .DS_Store
