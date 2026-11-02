@@ -159,6 +159,17 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visible_pairs(pybind11
     // n = total number of free/open voxels found
     const size_t n = open_voxels.size();
 
+    // protect the program by putting a max limit on open voxel count before computing ray traversals  
+    const size_t mo = 1000000;
+
+    if (n > mo){
+        throw std::runtime_error(
+        "Too many open voxels (n = " + std::to_string(n) +
+        ") for O(n^2) visibility computation. Limit is " +
+        std::to_string(mo) + "."
+    );
+    }
+
     // edges is list of an open voxel<->voxel pair and stored into open_voxels when visibility between pairs is true
     // so each element is a pair of ints (i and j indices in open_voxels) and only when i<->j is visible
     std::vector<std::pair<int,int>> edges;

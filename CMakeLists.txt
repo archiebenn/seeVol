@@ -1,15 +1,14 @@
 cmake_minimum_required(VERSION 3.15)
 project(seevol)
 
-# C++ 23
-set(CMAKE_CXX_STANDARD 23)
+# C++ 17 standard
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # require pybind  
 find_package(pybind11 REQUIRED)
 
-# TODO : update woo_test.cpp with real algorithm 
-# this created the occlusion_cpp module from woo_test.cpp
+# create occlusion_cpp module from .cpp
 pybind11_add_module(ray_occlusion_cpp tests/amanatides-woo_test.cpp)
 
 # for multi-threading the hot loop in is_visible:

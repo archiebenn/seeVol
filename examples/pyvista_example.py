@@ -16,6 +16,7 @@ small_nest = np.load(data_dir / "small_nest.npy")
 medium_nest = np.load(data_dir / "nest.npy")
 large_nest = np.load(data_dir / "large_nest.npy")
 porespy = np.load(data_dir / "porespy.npy")
+stanford_bunny = np.load(data_dir / "bunny.npy")
 
 
 def visibility_visualiser(vol):
