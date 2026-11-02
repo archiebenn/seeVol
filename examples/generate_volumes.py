@@ -39,7 +39,7 @@ def tunnel_excavater(size = 100, n_steps = 20000, branch_prob = 0.02, radius = 1
         # ****actual excavation step i.e. set carved voxel(s) == 1**** 
         vol[low[0]:high[0], low[1]:high[1], low[2]:high[2]] = 1
 
-    # begin 'excavation' with starting position at top in centre  
+    # begin 'excavation' with starting position near top in centre (1 down in y plane)    
     start = (size //2, size-1, size//2)
     # starting in the cebntre of the volume
     #start = (size // 2, size //2, size //2)
@@ -48,18 +48,26 @@ def tunnel_excavater(size = 100, n_steps = 20000, branch_prob = 0.02, radius = 1
     # active walker list (e.g an ant excavating)
     heads = [start]
     # define how the head/ant can move (one unit in all 6 directions in this xyz space)
-    # equal chance in each x/y/z
-    moves = [(1,0,0), (-1,0,0), (0,1,0), (0,-1,0), (0,0,1), (0,0,-1)]
-    # downward bias (like ants)
-    moves = [(1,0,0), (-1,0,0), (0,1,0), (0,-1,0), (0,-1,0), (0,-1,0), (0,0,1), (0,0,-1)]
-
+    #moves = [(1,0,0), (-1,0,0), # x
+    #         (0,1,0), (0,-1,0), # y
+    #         (0,0,1), (0,0,-1)] # z
+    
+    # or apply a slight y and x bias for increased chance of moving down/sideways (more ant-like)  
+    # change these values in each axes to adjust excavation shapes  
+    moves = (
+        [(1,0,0)] * 22 + [(-1,0,0)] * 22 + # x
+        [(0,1,0)] * 20 + [(0,-1,0)] * 22 + # y  
+        [(0,0,1)] * 20 + [(0,0,-1)] * 20 # z
+        )
 
     for _ in range(n_steps):
 
         head_idx = rng.randrange(len(heads))
         x,y,z = heads[head_idx]
+
         # movement selector
         dx,dy,dz = rng.choice(moves)
+
         # new head coordinates after move
         nx,ny,nz = x + dx, y + dy, z + dz
 
@@ -81,20 +89,15 @@ def tunnel_excavater(size = 100, n_steps = 20000, branch_prob = 0.02, radius = 1
 # tunnel network, all connected (single random-walk origin, branches only spawn from carved voxels)
 # add new tunnels below, or adapt existing three 
 
-# 100^3 default size version. ant-nest like optimised
-a = tunnel_excavater(seed=76, n_steps=15000, branch_prob=0.0001, radius=1)
-#a = tunnel_excavater(seed=10, n_steps=30000, branch_prob=0.0001, radius=1)
-
-# small 20^2 variant (smaller radius for narrower tunnels)
+# create volumes
+a = tunnel_excavater(size=100, seed=65, n_steps=20000, branch_prob=0.0001, radius=1)
 b = tunnel_excavater(size=20, seed=8, n_steps=500, branch_prob=0.0001, radius=0)
-
-# large 150^3 variant
-c = tunnel_excavater(size=150, seed=3, n_steps=120000, branch_prob=0.0001, radius=1)
+c = tunnel_excavater(size=180, seed=6, n_steps=10000, branch_prob=0.0001, radius=1)
 
 # saving out the .npy volumes
 np.save(data_dir / "nest.npy", a)
-np.save(data_dir / "nest_small.npy", b)
-np.save(data_dir / "nest_large.npy", c)
+np.save(data_dir / "small_nest.npy", b)
+np.save(data_dir / "large_nest.npy", c)
 
 # some infor printed out about % of excavated volume  
 print(f"nest.npy: {a.sum()} open voxels of {a.size} ({100*a.sum()/a.size:.2f}%)")

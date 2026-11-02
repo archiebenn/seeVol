@@ -12,8 +12,9 @@ from visivox.ray_occlusion_cpp import visible_pairs
 data_dir = Path(__file__).resolve().parent / "volumes"
 
 # load in generated example nest volume .npys
-small_20_nest = np.load(data_dir / "nest_small.npy")
-medium_100_nest = np.load(data_dir / "nest.npy")
+small_nest = np.load(data_dir / "small_nest.npy")
+medium_nest = np.load(data_dir / "nest.npy")
+large_nest = np.load(data_dir / "large_nest.npy")
 porespy = np.load(data_dir / "porespy.npy")
 
 
@@ -89,7 +90,8 @@ def visibility_visualiser(vol):
     print(f"Total time before render: {t_build:.3f}s")
 
     # show pyvista render in window
+    p.camera_position = 'zy'
     p.show()
 
 
-visibility_visualiser(medium_100_nest)
+visibility_visualiser(large_nest)

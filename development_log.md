@@ -104,11 +104,14 @@ Python: 18.12656s  (82x slower)
 
 ![porespy](https://github.com/archiebenn/wise-pears/blob/main/images/porespy.png "64^3 Porespy example volume")
 
-- also changed some of the excavation/volume generator to have a downward bias to make it more ant-like  
-- example output from one of my generated 'artifical ant nest excavations':  
+- also changed some of the excavation/volume generator in `generate_volumes.py` to have a downward bias to make it more ant-like  
+- example of a 100^3 downward-bias excavation volume with visibility:  
 
 ![my excavation](https://github.com/archiebenn/wise-pears/blob/main/images/downard_bias.png "100^3 ant excavation example volume")
 
+- and an example of a 150^3 and more realistic nest (slight increase in x (+ and -) and y (- only) excavation biases):  
+
+![my excavation2](https://github.com/archiebenn/wise-pears/blob/main/images/realistic_nest.png "150^3 ant excavation example volume")
 
 - had thoughts over the weekend and think i will try to apply octree and also some radius bounds for checking rays  
 - radius bounds should theoretically allow much larger voxel counst to be checked as will stop it being O(n^2)  
