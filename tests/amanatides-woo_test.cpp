@@ -5,13 +5,17 @@ date started: 26-10-2026
 author: Archie Benn sj19031@bristol.ac.uk
 */  
 
-#include <pybind11/pybind11.h>
-#include <pybind11/numpy.h>
+#include <omp.h>
+#include <atomic>
+#include <iostream>
 #include <vector>
 #include <cstdint>
 #include <utility>
 #include <cmath>
 #include <algorithm>
+#include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
+
 
 /**
  * Return voxel value (0 or 1) from numpy array (3D volume)
@@ -163,6 +167,12 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visible_pairs(pybind11
     // outer loop walks every voxel i=0 to i=n-1 in open_voxels
     // this is the main loop which walks through every voxel pair (i, j) and tests occlusion using is_visible
     {
+
+        std::cout << "RUNNING C++ VOXEL RAY-CASTING...\n";
+
+        // atomic long long counter (for terminal completion) - atomic means no two threads can increment at same time
+        std::atomic<long long> completed{0};
+
         // (for multithreading)
         pybind11::gil_scoped_release release;
 
@@ -178,6 +188,7 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visible_pairs(pybind11
             #pragma omp for schedule(dynamic, 16) nowait
             for (long long i = 0; i < (long long)n; ++i)
             {
+
                 // point at voxel i's coordinates stored in open_voxels and store as a
                 const Vec3i& a = open_voxels[i];
 
@@ -197,14 +208,30 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visible_pairs(pybind11
                         local.emplace_back((int)i, (int)j);
                     }
                 }
+
+                // a little completion bar for this hot loop to the terminal 
+                long long done = ++completed;
+                // print every 2500th voxel pair completed
+                if (done % 2500 == 0) {
+                    double frac = (double)done / (double)n;
+                    // how many #s to show
+                    int filled = (int)(frac * 40);
+                    // \r overwrites previous output and then std::flushg sends straight to terminal  
+                    std::cout << "\r[" << std::string(filled, '#') << std::string(40 - filled, '-')
+                    << "] " << (int)(frac * 100) << "%" << std::flush;
+                }
             }
 
             // merge this thread's results into the shared edges, one thread at a time
             #pragma omp critical
             edges.insert(edges.end(), local.begin(), local.end());
         }
+
     }  
     // ****HOT LOOP END****
+
+    // 100% completion to terminal
+    std::cout << "\r[" << std::string(40, '#') << "] 100%\n";
 
     // threads finish in nondeterministic order, so sort to get the same output every run
     std::sort(edges.begin(), edges.end());

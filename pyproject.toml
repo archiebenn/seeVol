@@ -11,7 +11,7 @@ license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "Archie Benn" }]
 requires-python = ">=3.10"
-dependencies = ["numpy", "scipy"]
+dependencies = ["numpy", "scipy", "pyvista", "porespy"]
 
 [project.optional-dependencies]
 gui = ["napari[all]"]

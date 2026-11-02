@@ -93,3 +93,13 @@ Python: 18.12656s  (82x slower)
 - so users can do `uv pip install visivox[gui]` and that will then install my dependencies + `napari[all]`  
 - napari seems to be much better than pyvista, it renders full volumes and more interactive than `pyvista`  
 - had an idea to try and optimise the ray counts: if a ray A<->B is visible, and C,D,E are all traversed by that ray, is there a way to mark B,C,E as visible from A and B too? then don't need to individually check/cast C,D,E from A or B. should speed it up if i can get it implemented somehow, but maybe not  
+
+### 2-11-26  
+
+- worked a bit on the actual render and decided to switch back to `pyvista` from `napari` as it is actually better  
+- changed it to render the maximum visibility score from each 'viewing angle' in `pyvista` and it is much clearer too  
+- also added wireframe mesh around each open voxel  
+- had thoughts over the weekend and think i will try to apply octree and also some radius bounds for checking rays  
+- radius bounds should theoretically allow much larger voxel counst to be checked as will stop it being O(n^2)  
+- this is the current bottleneck as it limits any larger nests over like 125x125x125 currently  
+- however memory issue may also be a bottleneck as currently storing 2 arrays (Nx3, Mx2) for all visible pairs and coords in C++ function  

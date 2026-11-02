@@ -5,6 +5,7 @@
 import numpy as np
 from pathlib import Path
 import random
+import porespy as ps
 
 # .npy volume directory 
 data_dir = Path(__file__).resolve().parent / "volumes"
@@ -39,7 +40,8 @@ def tunnel_excavater(size = 100, n_steps = 20000, branch_prob = 0.02, radius = 1
         vol[low[0]:high[0], low[1]:high[1], low[2]:high[2]] = 1
 
     # begin 'excavation' with starting position in centre of volume
-    start = (size // 2, size //2, size //2)
+    start = (size //2, size, size//2)
+    #start = (size // 2, size //2, size //2)
     excavate(start)
 
     # active walker list (e.g an ant excavating)
@@ -75,7 +77,7 @@ def tunnel_excavater(size = 100, n_steps = 20000, branch_prob = 0.02, radius = 1
 # add new tunnels below, or adapt existing three 
 
 # 100^3 default size version. ant-nest like optimised
-a = tunnel_excavater(seed=91, n_steps=20000, branch_prob=0.0001, radius=1)
+a = tunnel_excavater(seed=76, n_steps=15000, branch_prob=0.0001, radius=1)
 #a = tunnel_excavater(seed=10, n_steps=30000, branch_prob=0.0001, radius=1)
 
 # small 20^2 variant (smaller radius for narrower tunnels)
@@ -93,3 +95,7 @@ np.save(data_dir / "nest_large.npy", c)
 print(f"nest.npy: {a.sum()} open voxels of {a.size} ({100*a.sum()/a.size:.2f}%)")
 print(f"nest_small.npy: {b.sum()} open voxels of {b.size} ({100*b.sum()/b.size:.2f}%)")
 print(f"nest_large.npy: {c.sum()} open voxels of {c.size} ({100*c.sum()/c.size:.2f}%)")
+
+# some other volumes from other libraries
+vol2 = ps.generators.blobs(shape=[64, 64, 64], porosity=0.5) 
+np.save(data_dir /"porespy.npy", vol2.astype(np.uint8))

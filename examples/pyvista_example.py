@@ -6,7 +6,6 @@ import numpy as np
 import time
 import pyvista as pv
 from pathlib import Path
-import napari
 from visivox.ray_occlusion_cpp import visible_pairs
 
 # get data directory  
@@ -15,7 +14,7 @@ data_dir = Path(__file__).resolve().parent / "volumes"
 # load in generated example nest volume .npys
 small_20_nest = np.load(data_dir / "nest_small.npy")
 medium_100_nest = np.load(data_dir / "nest.npy")
-# large_150_nest = np.load(data_dir / "nest_large.npy")
+porespy = np.load(data_dir / "porespy.npy")
 
 
 def visibility_visualiser(vol):
@@ -29,7 +28,7 @@ def visibility_visualiser(vol):
 
     t0_build = time.perf_counter()
 
-    # run main C++ Amanatides & Woo algorithm for ray tracing all open voxel pairs  
+    # run main C++ Amanatides & Woo algorithm for ray tracing and visibility checking all open voxel pairs  
     t0_cpp = time.perf_counter()
     coords, edges = visible_pairs(vol)
     t_cpp = time.perf_counter() - t0_cpp
@@ -38,30 +37,49 @@ def visibility_visualiser(vol):
     n_rays = n * (n - 1) // 2
 
     # count visible connections per voxel (each edge contributes to both endpoints)
+    # gives a 'visibility score' to each voxel based on visible counts to other voxels  
     counts = np.bincount(edges[:, 0], minlength=n) + np.bincount(edges[:, 1], minlength=n)
-    scores = counts / (n - 1)  # normalises to 0-1 if un-hashed
-
-    p = pv.Plotter()
+    scores = counts / (n - 1)  # normalises if un-hashed
 
     # create 3D grid with dimensions defined by .npy volume size (+ 1 cell in each dimension for pyvista)
-    #grid = pv.ImageData(dimensions=np.array(vol.shape) + 1)
+    p = pv.Plotter()
+    #p.enable_depth_peeling(number_of_peels=100, occlusion_ratio=0.0)
+    grid = pv.ImageData(dimensions=np.array(vol.shape) + 1)
 
-    # flatten cells for pyvista, and attach 0/1 voxel values to the volume grid  
-    #grid.cell_data["open"] = vol.flatten(order="F")
+    # flatten cells for pyvista and set every cell/voxel to 0  
+    grid.cell_data["open"] = vol.flatten(order="F")
+    score_volume = np.zeros(vol.shape, dtype=float) 
 
-    # start with every cell in volume as NaN 
-    score_volume = np.full(vol.shape, np.nan, dtype=float)
-
-    # access summed open voxel visibility scores from np.bincount on the visible_pairs() output and apply to the cells in volume
+    # apply visibility scores to the cell/voxel in volume
     score_volume[tuple(coords.T)] = scores
-    #grid.cell_data["visibility_score"] = score_volume.flatten(order="F")
+    grid.cell_data["visibility_score"] = score_volume.flatten(order="F")
+    grid = grid.cell_data_to_point_data() 
 
     # transparent outline of the full volume bounds for spatial context  
-    #p.add_mesh(grid.outline(), color="black", line_width=1)
+    p.add_mesh(grid.outline(), color="black", line_width=1.25)
 
-    # render each open voxel as a cell colored by its visibility score
-    #voxel_mesh = grid.threshold(0.5, scalars="open")
-    #p.add_mesh(voxel_mesh, scalars="visibility_score", cmap="turbo", opacity=0.5,show_edges=False)
+    # render the visibility volume with MIP style ray-casting (takes max. voxel value per 'viewing ray' in pyvista)  
+    p.add_volume(
+            grid,
+            scalars="visibility_score",
+            cmap="turbo",
+            blending="maximum",
+            shade=False,
+            opacity="linear",
+    )
+
+    # add an open mesh around each of the 1s to highlight the full excavated volume more clearly
+    open_mesh = grid.threshold(0.5, scalars="open")
+    p.add_mesh(
+            open_mesh,
+            color="grey",
+            style="wireframe",
+            opacity=0.1,
+            line_width=1,
+    )
+    
+    # un-comment to have an interactive plane-slider within the volume   
+    # p.add_mesh_clip_plane(voxel_mesh, scalars="visibility_score", cmap="turbo")
 
     t_build = time.perf_counter() - t0_build
 
@@ -70,14 +88,8 @@ def visibility_visualiser(vol):
     print(f"Average time per ray: {t_cpp / n_rays * 1e6:.5f} µs")
     print(f"Total time before render: {t_build:.3f}s")
 
-    viewer = napari.Viewer(ndisplay=3)
-    viewer.add_image(score_volume, colormap="turbo", rendering="mip", opacity=0.8)
-    
-    # add binary mask for reference to overall shape (not coloured)
-    viewer.add_labels(vol.astype(int), opacity=0.3)
-    napari.run()
-    
+    # show pyvista render in window
+    p.show()
 
 
-
-visibility_visualiser(medium_100_nest)
+visibility_visualiser(porespy)
