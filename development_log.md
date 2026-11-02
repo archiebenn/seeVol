@@ -107,7 +107,7 @@ Python: 18.12656s  (82x slower)
 - also changed some of the excavation/volume generator to have a downward bias to make it more ant-like  
 - example output from one of my generated 'artifical ant nest excavations':  
 
-![my excavation](https://github.com/archiebenn/wise-pears/blob/main/images/downward_bias.png "100^3 ant excavation example volume")
+![my excavation](https://github.com/archiebenn/wise-pears/blob/main/images/downard_bias.png "100^3 ant excavation example volume")
 
 
 - had thoughts over the weekend and think i will try to apply octree and also some radius bounds for checking rays  
