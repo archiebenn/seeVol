@@ -41,5 +41,6 @@ skip = "*-musllinux*"
 
 [tool.cibuildwheel.macos]
 before-all = "brew install libomp"
+environment = { MACOSX_DEPLOYMENT_TARGET = "14.0" }
 
 [tool.cibuildwheel.linux]
