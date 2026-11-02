@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "seevol"
-version = "0.1.0"
+version = "0.1.1"
 authors = [
   { name="Archie Benn", email="sj19031@bristol.ac.uk" },
 ]
