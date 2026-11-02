@@ -60,18 +60,4 @@ It prints the number of open voxels and visible pairs:
 
 ![150_cubed](https://github.com/archiebenn/wise-pears/blob/main/images/realistic_nest.png "150^3 ant excavation example volume")
 
-## Command-line usage
 
-The `seevol` command analyses a 3D binary volume saved as a `.npy` file:
-
-```bash
-seevol binary_volume.npy --output visibility.npz
-```
-
-The output archive contains:
-
-- `coords`: an `(N, 3)` array of open voxel coordinates.
-- `edges`: an `(M, 2)` array of visible-pair indices into `coords`.
-- `scores`: a length-`N` array with each voxel's visible-pair count divided by `N - 1` (zero when fewer than two voxels are open).
-
-Load the results in Python with `np.load("visibility.npz")`.
