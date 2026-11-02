@@ -1,7 +1,7 @@
 # Claude exact drop in for my .cpp file, just to test time in Python vs. C++
 # NOT authored by me
 
-from visivox.ray_occlusion_cpp import visible_pairs
+from seevol.ray_occlusion_cpp import visible_pairs
 
 import time
 import numpy as np

@@ -6,7 +6,7 @@ import numpy as np
 import time
 import pyvista as pv
 from pathlib import Path
-from visivox.ray_occlusion_cpp import visible_pairs
+from seevol.ray_occlusion_cpp import visible_pairs
 
 # get data directory  
 data_dir = Path(__file__).resolve().parent / "volumes"

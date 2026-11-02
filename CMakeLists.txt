@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(visivox)
+project(seevol)
 
 # C++ 23
 set(CMAKE_CXX_STANDARD 23)
@@ -31,4 +31,4 @@ else()
 endif()
 
 # once compiled so an .so, add to the wise_pears package folder  
-install(TARGETS ray_occlusion_cpp DESTINATION visivox)
+install(TARGETS ray_occlusion_cpp DESTINATION seevol)

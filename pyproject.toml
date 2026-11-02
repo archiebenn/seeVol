@@ -3,7 +3,7 @@ requires = ["scikit-build-core", "pybind11"]
 build-backend = "scikit_build_core.build"
 
 [project]
-name = "visivox"
+name = "seevol"
 version = "0.1.0"
 description = "All-pairs visibility analyses on voxel volumes (Amanatides & Woo, C++)"
 readme = "README.md"
@@ -17,10 +17,10 @@ dependencies = ["numpy", "scipy", "pyvista", "porespy"]
 gui = ["napari[all]"]
 
 [project.urls]
-Repository = "https://github.com/archiebenn/visivox"
+Repository = "https://github.com/archiebenn/seevol"
 
 [tool.scikit-build]
-wheel.packages = ["python/visivox"]
+wheel.packages = ["python/seevol"]
 sdist.exclude = ["tests", "development_log.md", "uv-cheatsheet.md"]
 
 [tool.pytest.ini_options]
