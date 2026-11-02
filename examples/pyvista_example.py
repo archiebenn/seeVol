@@ -92,4 +92,4 @@ def visibility_visualiser(vol):
     p.show()
 
 
-visibility_visualiser(porespy)
+visibility_visualiser(medium_100_nest)

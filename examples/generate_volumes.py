@@ -39,15 +39,20 @@ def tunnel_excavater(size = 100, n_steps = 20000, branch_prob = 0.02, radius = 1
         # ****actual excavation step i.e. set carved voxel(s) == 1**** 
         vol[low[0]:high[0], low[1]:high[1], low[2]:high[2]] = 1
 
-    # begin 'excavation' with starting position in centre of volume
-    start = (size //2, size, size//2)
+    # begin 'excavation' with starting position at top in centre  
+    start = (size //2, size-1, size//2)
+    # starting in the cebntre of the volume
     #start = (size // 2, size //2, size //2)
     excavate(start)
 
     # active walker list (e.g an ant excavating)
     heads = [start]
     # define how the head/ant can move (one unit in all 6 directions in this xyz space)
+    # equal chance in each x/y/z
     moves = [(1,0,0), (-1,0,0), (0,1,0), (0,-1,0), (0,0,1), (0,0,-1)]
+    # downward bias (like ants)
+    moves = [(1,0,0), (-1,0,0), (0,1,0), (0,-1,0), (0,-1,0), (0,-1,0), (0,0,1), (0,0,-1)]
+
 
     for _ in range(n_steps):
 
