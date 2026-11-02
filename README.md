@@ -15,9 +15,11 @@ This tool tests visibility between **all** open pairs throughout the volume, whi
 > [!WARNING]
 > `seevol` computes all-pairs visibility, which scales as O(open_voxels<sup>2</sup>). This becomes slow or memory-limiting beyond a few hundred thousand open voxels — see [Limitations](#limitations) before running on large volumes. Downsampling the volume is likely to help but will impact results.  
 
-## Dependencies
+## Requirements
 
-A C++17 or greater build toolchain is required for source installation, alongside Python >=3.10.  
+Python 3.10–3.13. Prebuilt wheels are available for Windows, Linux (x86_64), and macOS (Apple Silicon, macOS 26+). Other platforms will build from source and require CMake, a C++17 compiler, and `pybind11`.
+
+## Dependencies
 
 Pyvista is a dependency for visualisations of the visibility metrics output onto the 3D volume itself (see [this visual example](examples/visualiser_example.py) for use).
 
