@@ -5,8 +5,6 @@
 import numpy as np
 import time
 import pyvista as pv
-from pathlib import Path
-from generator import tunnel_excavator
 from seevol.voxel_occlusion import visible_pairs
 
 def visibility_visualiser(vol, verbose=False):
@@ -90,7 +88,3 @@ def visibility_visualiser(vol, verbose=False):
     # show pyvista render in window
     p.camera_position = 'zy'
     p.show()
-
-# run excavator and view pyvista plot
-example_nest = tunnel_excavator(size=150, seed=45, n_steps=15000, branch_prob=0.0001, radius=1)
-visibility_visualiser(example_nest, verbose=True)

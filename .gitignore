@@ -5,3 +5,4 @@ __pycache__
 initial_trials/
 *.npy
 .DS_Store
+benchmarks/
