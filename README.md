@@ -1,8 +1,10 @@
-# seeVol
-
 <p align="center">
   <img src="images/readme_banner.png" alt="3D visualisation of an artificial ant nest volume coloured by voxel visibility" width="800">
 </p>
+
+# seeVol
+
+![Build wheels](https://github.com/archiebenn/seeVol/actions/workflows/wheels.yml/badge.svg)
 
 `seevol` analyses line-of-sight visibility in 3D binary volumes, where 0 represents a solid/opaque voxel, and 1 represents open/transparent voxels. 
 

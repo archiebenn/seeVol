@@ -1,5 +1,6 @@
 name: Build wheels
 
+# pushing with any v* tag will start new worklflow build
 on:
   push:
     tags:
