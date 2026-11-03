@@ -48,7 +48,7 @@ def visibility_visualiser(vol, plane_slicer = False, verbose=False):
 
     # apply visibility scores to the cell/voxel in volume
     score_volume[tuple(coords.T)] = scores
-    grid.cell_data["visibility_score"] = score_volume.flatten(order="F")
+    grid.cell_data["voxel_visibility_score"] = score_volume.flatten(order="F")
     grid = grid.cell_data_to_point_data() 
 
     # transparent outline of the full volume bounds for spatial context  
@@ -60,7 +60,7 @@ def visibility_visualiser(vol, plane_slicer = False, verbose=False):
         # render the visibility volume with MIP style ray-casting (takes max. voxel value per 'viewing ray' in pyvista)  
         p.add_volume(
             grid,
-            scalars="visibility_score",
+            scalars="voxel_visibility_score",
             cmap="turbo",
             blending="maximum",
             shade=False,
@@ -92,7 +92,7 @@ def visibility_visualiser(vol, plane_slicer = False, verbose=False):
 
         # add plane slider 
         p.add_mesh_clip_plane(grid, 
-                              scalars="visibility_score", 
+                              scalars="voxel_visibility_score", 
                               cmap="turbo")
 
     t_build = time.perf_counter() - t0_build
