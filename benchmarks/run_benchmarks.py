@@ -1,4 +1,4 @@
-# benchmarks.py - benchmarking C++ timings on algorithm over time with development  
+# run_benchmarks.py - benchmarking C++ timings on algorithm over time with development and consistent volume structure   
 # author: Archie Benn sj19031@bristol.ac.uk 
 # date: 28-10-26  
 
@@ -39,6 +39,8 @@ def benchmark(name, vol, repeats=3, computer = computer_name):
 
     n = len(coords)
     n_rays = n * (n - 1) // 2
+
+    # information to append per run to csv  
     row = {
         "timestamp": datetime.datetime.now().isoformat(timespec="seconds"),
         "computer": computer,
@@ -53,11 +55,16 @@ def benchmark(name, vol, repeats=3, computer = computer_name):
     }
     print(row)
 
+    # write results to main csv 
     new = not csv_path.exists()
     with csv_path.open("a", newline="") as f:
+
         w = csv.DictWriter(f, fieldnames=row.keys())
+
+        # failsafe as should exist already (1st run only)  
         if new:
             w.writeheader()
+
         w.writerow(row)
 
 

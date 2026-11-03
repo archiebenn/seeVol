@@ -4,7 +4,9 @@ import seevol
 import numpy as np
 import skimage.measure
 
-# stag beetle volume
+# stag beetle volume - 	(The stag beetle from Georg Glaeser, Vienna University of Applied Arts, Austria, 
+# was scanned with an industrial CT by Johannes Kastner, Wels College of Engineering, Austria, 
+# and Meister Eduard Gröller, Vienna University of Technology, Austria.)
 # downloaded from: http://klacansky.com/open-scivis-datasets/
 vol = np.fromfile("tests/other_volumes/stag_beetle_832x832x494_uint16.raw", dtype=np.uint16)
 
