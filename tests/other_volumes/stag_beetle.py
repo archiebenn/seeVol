@@ -2,12 +2,15 @@
 
 import seevol
 import numpy as np
+from pathlib import Path
+
+data_dir = Path(__file__).resolve().parent
 
 # stag beetle volume - 	(The stag beetle from Georg Glaeser, Vienna University of Applied Arts, Austria, 
 # was scanned with an industrial CT by Johannes Kastner, Wels College of Engineering, Austria, 
 # and Meister Eduard Gröller, Vienna University of Technology, Austria.)
 # downloaded from: http://klacansky.com/open-scivis-datasets/
-vol = np.fromfile("tests/other_volumes/stag_beetle_832x832x494_uint16.raw", dtype=np.uint16)
+vol = np.fromfile(data_dir/"stag_beetle_832x832x494_uint16.raw", dtype=np.uint16)
 
 # z, y, x order
 vol = vol.reshape((494, 832, 832)) 
