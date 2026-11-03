@@ -1,5 +1,5 @@
 from .generator import tunnel_excavator
-from .voxel_occlusion import get_voxel_value, is_visible, visible_pairs
+from .voxel_cpp import get_voxel_value, is_visible, visible_pairs
 from .visualiser import visibility_visualiser
 
 __all__ = [

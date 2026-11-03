@@ -5,7 +5,7 @@
 import numpy as np
 import time
 import pyvista as pv
-from seevol.voxel_occlusion import visible_pairs
+import seevol
 
 def visibility_visualiser(vol, view_type = "mip", verbose=False):
     """
@@ -24,9 +24,9 @@ def visibility_visualiser(vol, view_type = "mip", verbose=False):
     # run main C++ Amanatides & Woo algorithm for ray tracing and visibility checking all open voxel pairs  
     t0_cpp = time.perf_counter()
     if verbose == True:
-        coords, edges = visible_pairs(vol, verbose=True)
+        coords, edges = seevol.visible_pairs(vol, verbose=True)
     else:
-        coords, edges = visible_pairs(vol)
+        coords, edges = seevol.visible_pairs(vol)
     t_cpp = time.perf_counter() - t0_cpp
 
     n = len(coords)

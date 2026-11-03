@@ -124,3 +124,9 @@ VOXEL RAY-CASTING RUNNING
 [########################################] 100%
 ```
 
+## 3-11-26
+
+- overall, volume visibility side is working well up to about 250-400k ooen voxels in a tunnel-like structure, and less for more open structures due to non-early exiting  
+- i want to eventually publish this in JOSS or a similar journal, so i have decided i want to continue working on ti and build it up more as a useable tool  
+- one idea is to compute proper graph analysis metrics in C++, rather than via networkx or igraph later which would probably break anyway  
+- also to add spatial network analysis as another .cpp file: so will aim to redistribute the current .cpp into different ones e.g.  common.cpp (shared), visibility.cpp (current occlusion.cpp mainly), spatial.cpp (spatial network analysis) and bindings.cpp (for python bindings)  
