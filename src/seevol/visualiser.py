@@ -7,7 +7,7 @@ import time
 import pyvista as pv
 from seevol.voxel_occlusion import visible_pairs
 
-def visibility_visualiser(vol, plane_slicer = False, verbose=False):
+def visibility_visualiser(vol, view_type = "mip", verbose=False):
     """
     Takes a volume in .npy format with binary voxel values of 0 or 1 (0 = solid, 1 = open).  
 
@@ -54,10 +54,13 @@ def visibility_visualiser(vol, plane_slicer = False, verbose=False):
     # transparent outline of the full volume bounds for spatial context  
     p.add_mesh(grid.outline(), color="black", line_width=1.25)
 
-    # if no plane slicer render visibility across full volume
-    if plane_slicer == False:
+    # add axes arrows
+    viewport = (0, 0, 0.2, 0.2)
+    p.add_axes(viewport=viewport)
 
-        # render the visibility volume with MIP style ray-casting (takes max. voxel value per 'viewing ray' in pyvista)  
+    # default maximum intensity projection (MIP) style ray-casting (max voxel value per ray from viewpoint)
+    if view_type == "mip":
+
         p.add_volume(
             grid,
             scalars="voxel_visibility_score",
@@ -74,11 +77,11 @@ def visibility_visualiser(vol, plane_slicer = False, verbose=False):
             color="grey",
             style="wireframe",
             opacity=0.1,
-            line_width=1
+            line_width=1,
             )
     
     # with interactive plane-slicer only render visibility at the plane slice
-    elif plane_slicer == True:
+    elif view_type == "slices":
 
         # add an open mesh around each of the 1s to highlight the full excavated volume more clearly
         open_mesh = grid.threshold(0.5, scalars="open")
@@ -95,6 +98,25 @@ def visibility_visualiser(vol, plane_slicer = False, verbose=False):
                               scalars="voxel_visibility_score", 
                               cmap="turbo")
 
+    elif view_type == "volume":
+        
+            p.add_volume(grid, cmap='viridis', scalars="voxel_visibility_score")
+            p.camera_position = 'zy'
+            p.show()
+
+            # add an open mesh around each of the 1s to highlight the full excavated volume more clearly
+            open_mesh = grid.threshold(0.5, scalars="open")
+            p.add_mesh(
+                open_mesh,
+                color="grey",
+                style="wireframe",
+                opacity=0.1,
+                line_width=1,
+                )
+
+    else:
+         print("Please select a view type for this pyvista render (see docs for more information)")
+
     t_build = time.perf_counter() - t0_build
 
     if verbose == True:
@@ -106,3 +128,4 @@ def visibility_visualiser(vol, plane_slicer = False, verbose=False):
     # show pyvista render in window
     p.camera_position = 'zy'
     p.show()
+
