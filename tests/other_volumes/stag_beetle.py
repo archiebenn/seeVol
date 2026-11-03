@@ -2,7 +2,6 @@
 
 import seevol
 import numpy as np
-import skimage.measure
 
 # stag beetle volume - 	(The stag beetle from Georg Glaeser, Vienna University of Applied Arts, Austria, 
 # was scanned with an industrial CT by Johannes Kastner, Wels College of Engineering, Austria, 
