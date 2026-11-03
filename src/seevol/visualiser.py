@@ -1,4 +1,4 @@
-# plot_visibility.py - view pyvista example outputs coloured by voxel visibility scores 
+# visualiser.py - view pyvista outputs coloured by voxel visibility scores 
 # date: 28-10-2026
 # author: Archie Benn sj19031@bristol.ac.uk 
 
@@ -7,7 +7,7 @@ import time
 import pyvista as pv
 from seevol.voxel_occlusion import visible_pairs
 
-def visibility_visualiser(vol, verbose=False):
+def visibility_visualiser(vol, plane_slicer = False, verbose=False):
     """
     Takes a volume in .npy format with binary voxel values of 0 or 1 (0 = solid, 1 = open).  
 
@@ -54,28 +54,46 @@ def visibility_visualiser(vol, verbose=False):
     # transparent outline of the full volume bounds for spatial context  
     p.add_mesh(grid.outline(), color="black", line_width=1.25)
 
-    # render the visibility volume with MIP style ray-casting (takes max. voxel value per 'viewing ray' in pyvista)  
-    p.add_volume(
+    # if no plane slicer render visibility across full volume
+    if plane_slicer == False:
+
+        # render the visibility volume with MIP style ray-casting (takes max. voxel value per 'viewing ray' in pyvista)  
+        p.add_volume(
             grid,
             scalars="visibility_score",
             cmap="turbo",
             blending="maximum",
             shade=False,
             opacity="linear",
-    )
+        )
 
-    # add an open mesh around each of the 1s to highlight the full excavated volume more clearly
-    open_mesh = grid.threshold(0.5, scalars="open")
-    p.add_mesh(
+        # add an open mesh around each of the 1s to highlight the full excavated volume more clearly
+        open_mesh = grid.threshold(0.5, scalars="open")
+        p.add_mesh(
+            open_mesh,
+            color="grey",
+            style="wireframe",
+            opacity=0.1,
+            line_width=1
+            )
+    
+    # with interactive plane-slicer only render visibility at the plane slice
+    elif plane_slicer == True:
+
+        # add an open mesh around each of the 1s to highlight the full excavated volume more clearly
+        open_mesh = grid.threshold(0.5, scalars="open")
+        p.add_mesh(
             open_mesh,
             color="grey",
             style="wireframe",
             opacity=0.1,
             line_width=1,
-    )
-    
-    # un-comment to have an interactive plane-slider within the volume   
-    # p.add_mesh_clip_plane(voxel_mesh, scalars="visibility_score", cmap="turbo")
+            )
+
+        # add plane slider 
+        p.add_mesh_clip_plane(grid, 
+                              scalars="visibility_score", 
+                              cmap="turbo")
 
     t_build = time.perf_counter() - t0_build
 

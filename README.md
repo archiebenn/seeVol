@@ -8,7 +8,7 @@
 
 `seevol` analyses line-of-sight visibility in 3D binary volumes, where 0 represents a solid/opaque voxel, and 1 represents open/transparent voxels. 
 
-The core functionality is based on the Amanatides & Woo voxel traversal algorithm <sup>1</sup> and is implemented in C++ to compute straight line visibility between all pairs of open (non solid) voxels in a given volume.  
+The core functionality is based on the Amanatides & Woo voxel traversal algorithm <sup>1</sup> and is implemented in C++ to compute straight line visibility between pairs of open (non solid) voxels in a given volume.  
 
 This tool tests visibility between **all** open pairs throughout the volume, which permits per-voxel visibility analysis metrics to be calculated downstream for every open voxel.
 
@@ -54,7 +54,7 @@ Downstream analyses or visualisations are then possible from this output, such a
 
 This tool currently uses all-pair calculation using voxel ray traversal. Because of this, the ray traversal algorithm scales as O(open_voxels<sup>2</sup>) and is therefore quickly unusable for large volumes.  
 
-A hard limit is imposed in the C++ source file which limits open voxels to 1,000,000. In reality, volumes with over 500,000 open voxels are likely to significant memory issues as very large visible edges will be stored. Methods to reduce this runtime will hopefully be introduced over time.
+A hard limit is imposed in the C++ source file which limits the maximum open voxel count to 1,000,000. In reality, volumes with over 500,000 open voxels are likely to lead to OOM issues on normal computers as very large visible edges will be stored. Methods to reduce this runtime will hopefully be introduced over time.
 
 ## Minimal example
 
@@ -104,13 +104,17 @@ print(f"{len(coords)} open voxels containing {len(edges)} visible pairs")
 
 ## Visualisation examples on large artificial volumes
 
-Below shows an example output of the visibility score per voxel as a heatmap within an intricate 150x150x150 volume, generated using `tunnel_excavator()` to mimic an ant-nest structure and visualised with Pyvista using `visibility_visualiser()`:  
+Below shows an example output of the visibility score per voxel as a heatmap within an excavated tunnel system in a 150x150x150 volume, generated using `tunnel_excavator()` to mimic an ant-nest structure and visualised with Pyvista using `visibility_visualiser()`:  
 
 ![150_cubed](images/realistic_nest.png "150^3 ant excavation example volume")
 
-A visibility scored volume using a generated `porespy` volume:
+A visibility scored volume using a generated 64x64x64 `porespy` volume:
 
-![150_cubed](images/porespy.png "150^3 ant excavation example volume")
+![64_cubed](images/porespy.png "64^3 porespy example volume")
+
+Using `visibility_visualiser(plane_slicer=True)` on a 180x180x180 volume to see plane slices of visibility scores:  
+
+![180_cubed](images/plane_slicer.png "180^3 sliced example volume")
 
 
 ## References

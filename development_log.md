@@ -1,7 +1,7 @@
 # Development Log 
 
 ```
-Project: wise-pears
+Project: seeVol
 Author: Archie Benn sj19031@bristol.ac.uk  
 Date started: 26-10-2026
 ```
@@ -41,7 +41,7 @@ Date started: 26-10-2026
 
 ### 26-10-2026  
 
-- started development of `wise-pears`
+- started development of `wise-pears` (`seevol`)  
 - set up python project development and learned about how to create these pip-installable tools
 - tested out using `pyvista` with some generated simple 3D binary volumes with 'solid voxel == 0' and 'open voxel == 1'  
 
