@@ -116,6 +116,11 @@ Using `visibility_visualiser(plane_slicer=True)` on a 180x180x180 volume to see 
 
 ![180_cubed](images/plane_slicer.png "180^3 sliced example volume")
 
+And an example using a CT scan of a stag beetle (raw scan file downloaded from: http://klacansky.com/open-scivis-datasets/)  
+
+
+![Stag beetle](images/stag_beetle.png "CT scan stag beetle volume")
+
 
 ## References
 

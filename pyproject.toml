@@ -18,7 +18,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
-dependencies = ["numpy", "pyvista"]
+dependencies = ["numpy", "pyvista", "scikit-image"]
 
 [project.urls]
 Repository = "https://github.com/archiebenn/seeVol"
