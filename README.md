@@ -102,19 +102,27 @@ coords, edges = seevol.visible_pairs(volume)
 print(f"{len(coords)} open voxels containing {len(edges)} visible pairs")
 ```
 
-## Visualisation examples on large artificial volumes
+## Visualisation examples on large volumes
+
+#### 1. Artificial 'ant nest'  
 
 Below shows an example output of the visibility score per voxel as a heatmap within an excavated tunnel system in a 150x150x150 volume, generated using `tunnel_excavator()` to mimic an ant-nest structure and visualised with Pyvista using `visibility_visualiser()`:  
 
 ![150_cubed](images/realistic_nest.png "150^3 ant excavation example volume")
 
-An example using a CT scan of a stag beetle (raw scan file downloaded from: http://klacansky.com/open-scivis-datasets/)  
+#### 2. CT scan of a male stag beetle   
+
+An example using a CT scan of a male stag beetle (raw scan file downloaded from: http://klacansky.com/open-scivis-datasets/)  
 
 ![Stag beetle](images/stag_beetle.png "CT scan stag beetle volume")
+
+#### 3. Artificial porous volume    
 
 A visibility scored volume using a generated 64x64x64 `porespy` volume:
 
 ![64_cubed](images/porespy.png "64^3 porespy example volume")
+
+#### 4. Plane slicer on an artificial 'ant nest'     
 
 Using `visibility_visualiser(plane_slicer=True)` on a 180x180x180 volume to see plane slices of visibility scores:  
 
