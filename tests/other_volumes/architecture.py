@@ -11,6 +11,8 @@ data_dir = Path(__file__).resolve().parent
 
 # load .glbs
 football_scene = trimesh.load(data_dir/"football-stadium.glb")
+bus_scene = trimesh.load(data_dir/"bus-terminal.glb")
+
 
 def glb_to_npy(mesh, voxel_target):
 
