@@ -25,4 +25,4 @@ threshold = 900
 binary = (small > threshold).astype(np.uint8)
 
 # run visualiser
-seevol.visibility_visualiser(binary, verbose=True)
+seevol.py_visibility_visual(binary, verbose=True)

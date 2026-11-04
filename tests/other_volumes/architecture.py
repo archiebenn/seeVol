@@ -39,4 +39,4 @@ def glb_to_npy(mesh, voxel_target):
     return vol
 
 # run .glb -> .npy -> seevol -> pyvista visualiser
-seevol.visibility_visualiser(glb_to_npy(football_scene, 150), view_type="mip", verbose=True)
+seevol.py_visibility_visual(glb_to_npy(football_scene, 150), view_type="mip", verbose=True)

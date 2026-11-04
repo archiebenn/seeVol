@@ -6,12 +6,19 @@ Author: Archie Benn sj19031@bristol.ac.uk
 Date started: 26-10-2026
 ```
 
+--------- current to do list -----------
+
+- set up the bfs traversal logic in `spatial.cpp` for a simple spatial network design from the volumes  
+
+-----------------e----------------------
+
 ## Goal of this project  
 
-- My PhD will involve the use of microCT scanning ant nests to gain a 3D image of their architecture  
-- I want to quantify the visibility of different areas within the nests from these scans to investigate the impact of different digging conditions on the 'openness' of ant nests  
-- However, I also want to develop a more general tool which can be used by others, be it in ecology or other areas using microCT  
-- So this project aims to be as open as possible, utilising `.npy` objects to generate visibility graphs via `networkx` and 3D visualisation of visibility using `pyvista`   
+- My PhD will involve using microCT scanning of excavated ant nests to gain a 3D image of their architecture  
+- I want to quantify the accessibility, both visual and spatial, of different areas within the nests from these scans to investigate nest architecture development under different pressures, such as pathogen presence and different temperatures  
+- I have started this `seevol` project as a tool to help me answer different and new questions about ant nest architecture. Its overall aim is to build on the current field and how zones within 3D structures can be quantified with respect to visibility via line-of-sight and spatial accessibility  
+- However, I also want to develop a more general tool which can be used by others, be it in ecology or other areas working with complex 3D structures    
+- So this project aims to be as open as possible, utilising `.npy` objects to generate spatial and visibility graphs, alongside visualisations of these metrics in `pyvista`     
 
 ## Tool pipeline goal (as of october 2026)  
 

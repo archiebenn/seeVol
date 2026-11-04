@@ -1,4 +1,4 @@
-# visualiser.py - view pyvista outputs coloured by voxel visibility scores 
+# visibility_visual.py - view pyvista outputs coloured by voxel visibility scores 
 # date: 28-10-2026
 # author: Archie Benn sj19031@bristol.ac.uk 
 
