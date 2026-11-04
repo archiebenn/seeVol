@@ -43,7 +43,7 @@ def tunnel_excavator(size = 100, n_steps = 20000, branch_prob = 1e-5, radius = 1
     # apply a slight y and x bias for increased chance of moving down/sideways (more ant-like)  
     # change these values in each axes to adjust excavation shapes  
     moves = (
-        [(1,0,0)] * 21 + [(-1,0,0)] * 21 + # x
+        [(1,0,0)] * 20 + [(-1,0,0)] * 20 + # x
         [(0,1,0)] * 20 + [(0,-1,0)] * 22 + # y  
         [(0,0,1)] * 20 + [(0,0,-1)] * 20 # z
         )
