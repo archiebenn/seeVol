@@ -37,10 +37,20 @@ bool is_visible(const Vol& volume, int x0, int y0, int z0, int x1, int y1, int z
 bool is_visible_py(pybind11::array_t<uint8_t> volume, int x0, int y0, int z0, int x1, int y1, int z1);
 
 /**
- * Compute all visible pairs of free voxels in the volume.
- * One call from Python; returns the free voxel coordinates plus the list of visible (i, j) index pairs into that list.
+ * Compute all visible pairs of free voxels in the volume for visibility graph analysis.
+ * One call from Python; returns the free voxel coordinates plus the list of visible (i, j) index pairs into that array.
  *
  * @param volume numpy np.uint8 data type
  * @return pair of: (N x 3 int array of free voxel coordinates, M x 2 int array of visible index pairs)
  */
 std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visible_pairs(pybind11::array_t<uint8_t> volume, bool verbose);
+
+/**
+ * Compute visibility scores for all open voxels in the volume.
+ * Similar to visible_pairs but does not store edges: only keeps raw scores per voxel so less memory heavy.  
+ * One call from Python; returns the free voxel coordinates plus the visibility score.
+ *
+ * @param volume numpy np.uint8 data type
+ * @return pair of: (N x 3 int array of free voxel coordinates and N visibility scores)
+ */
+std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visibility_scores(pybind11::array_t<uint8_t> volume, bool verbose);

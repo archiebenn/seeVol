@@ -101,3 +101,14 @@ def test_matches_brute_force(seed):
         assert strict <= cpp <= lenient, (
             f"seed={seed} a={a} b={b} C++={cpp} strict={strict} lenient={lenient}"
         )
+
+# ensure that visibility_scores (memory improvements for visualisation only) matches visible_pairs
+def test_scores_and_edges():
+    rng = np.random.default_rng(0)
+    # vol about 75% open randomly allocated
+    vol = (rng.random((20, 20, 20)) > 0.25).astype(np.uint8)  
+
+    coords, edges = seevol.visible_pairs(vol)
+    coords2, scores = seevol.visibility_scores(vol)
+    assert (coords == coords2).all()
+    assert (np.bincount(edges.ravel(), minlength=len(coords)) == scores).all()

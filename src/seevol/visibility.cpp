@@ -177,7 +177,7 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visible_pairs(pybind11
                     // so can test visibility between them both with is_visible
                     if (is_visible(accessor, a.x, a.y, a.z, b.x, b.y, b.z))
                     {
-                        // if visible, record this pair in this thread's local list
+                        // if visible, record this pair/edge in this thread's local list
                         local.emplace_back((int)i, (int)j);
                     }
                 }
@@ -231,4 +231,115 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visible_pairs(pybind11
 
     return {coords, edge_arr};
 }
+
+
+std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visibility_scores(pybind11::array_t<uint8_t> volume, bool verbose){
+
+    // .unchecked<3>() gives fast volume(x,y,z) access to the numpy array
+    // update to is_visible (29-10-26) means that this is the only time accessor is built now
+    // and then passed by reference (const Vol&) to is_visible
+    auto accessor = volume.unchecked<3>();
+
+    // this will hold the x,y,z coordinates of every open voxel found in the volume
+    std::vector<Vec3i> open_voxels;
+
+    // loop over every voxel in the volume - accessor.shape<(0,1,2)> = size of volume in x,y,z axes  
+    // only keep voxels which are open (== 1)
+    for (int x = 0; x < accessor.shape(0); ++x)
+        for (int y =0; y < accessor.shape(1); ++y)
+            for (int z = 0; z < accessor.shape(2); ++z)
+                if (accessor(x,y,z) != 0)
+                    // record voxel (== 1) coordinates into open_voxels  
+                    open_voxels.push_back({x, y, z}); 
+
+    // n = total number of free/open voxels found
+    const size_t n = open_voxels.size();
+
+    // visibility scores - n ints starting at 0
+    std::vector<int> counts(n, 0);  
+
+    // ****HOT LOOP START****
+    // outer loop walks every voxel i=0 to i=n-1 in open_voxels
+    // this is the main loop which walks through every voxel pair (i, j) and tests occlusion using is_visible
+    {
+
+        if (verbose) std::cout << "RUNNING C++ VOXEL RAY-CASTING...\n";
+
+        // atomic long long counter (for terminal completion) - atomic means no two threads can increment at same time
+        std::atomic<long long> completed{0};
+
+        // (for multithreading)
+        pybind11::gil_scoped_release release;
+
+        // start a team of threads and each runs this block
+        #pragma omp parallel
+        {
+            // this thread's count 
+            std::vector<int> local(n, 0);
+
+            // split the outer loop across threads. dynamic, 16 = threads grab chunks of 16 rows as they finish
+            #pragma omp for schedule(dynamic, 16) nowait
+            for (long long i = 0; i < (long long)n; ++i)
+            {
+
+                // point at voxel i's coordinates stored in open_voxels and store as a
+                const Vec3i& a = open_voxels[i];
+
+                // inner loop: symmetry optimisation -> never check the same pair from the opposite direction
+                for (size_t j = (size_t)i + 1; j < n; ++j)
+                {
+                    // point at voxel j's coordinates stored in open_voxels and store as b
+                    const Vec3i& b = open_voxels[j];
+
+                    // test visibility between voxels (i and j) with coords stored in a and b
+                    if (is_visible(accessor, a.x, a.y, a.z, b.x, b.y, b.z))
+
+                    // if visible to each other, +1 to each voxel's visibility counter
+                    {
+                        ++local[i];
+                        ++local[j];
+                    }
+                }
+
+                // a little completion bar for this hot loop to the terminal 
+                long long done = ++completed;
+                // print every 2500th voxel pair completed
+                if (verbose && done % 2500 == 0) {
+                    double frac = (double)done / (double)n;
+                    // how many #s to show
+                    int filled = (int)(frac * 40);
+                    // \r overwrites previous output and then std::flushg sends straight to terminal  
+                    if (verbose) std::cout << "\r[" << std::string(filled, '#') << std::string(40 - filled, '-')
+                    << "] " << (int)(frac * 100) << "%" << std::flush;
+                }
+            }
+
+            // merge this thread's results into the shared edges, one thread at a time to get all open voxel results
+            #pragma omp critical
+            for (size_t k = 0; k < n; ++k) counts[k] += local[k];
+        }
+
+    }  
+    // ****HOT LOOP END****
+
+    // 100% completion to terminal
+    if (verbose) std::cout << "\r[" << std::string(40, '#') << "] 100%\n";
+
+    // pack open voxel coords into an N x 3 numpy array with 1D array of scores
+    auto coords = pybind11::array_t<int>({(long)n, (long)3});
+    auto coords_acc = coords.mutable_unchecked<2>();
+    auto scores = pybind11::array_t<int>((pybind11::ssize_t)n);
+    auto s = scores.mutable_unchecked<1>();
+    // for all open voxel coordinates:
+    for (size_t i = 0; i < n; ++i) {
+        coords_acc(i, 0) = open_voxels[i].x;
+        coords_acc(i, 1) = open_voxels[i].y;
+        coords_acc(i, 2) = open_voxels[i].z;
+        // attach score
+        s(i) = counts[i];
+    }
+
+    return {coords, scores};
+}
+
 

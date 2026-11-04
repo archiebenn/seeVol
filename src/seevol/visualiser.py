@@ -11,7 +11,7 @@ def visibility_visualiser(vol, view_type = "mip", verbose=False):
     """
     Takes a volume in .npy format with binary voxel values of 0 or 1 (0 = solid, 1 = open).  
 
-    Runs the visible_pairs function (written in C++ for efficiency) and computes visibility scores for every open voxel in the volume.
+    Runs the visibility_scores function (written in C++ for efficiency) to compute visibility scores for every open voxel in the volume.
 
     Visibility scores of open voxels are then visualised in 3D on the volume using pyvista.
     """
@@ -24,17 +24,13 @@ def visibility_visualiser(vol, view_type = "mip", verbose=False):
     # run main C++ Amanatides & Woo algorithm for ray tracing and visibility checking all open voxel pairs  
     t0_cpp = time.perf_counter()
     if verbose == True:
-        coords, edges = seevol.visible_pairs(vol, verbose=True)
+        coords, counts = seevol.visibility_scores(vol, verbose=True)
     else:
-        coords, edges = seevol.visible_pairs(vol)
+        coords, counts = seevol.visibility_scores(vol)
     t_cpp = time.perf_counter() - t0_cpp
 
     n = len(coords)
     n_rays = n * (n - 1) // 2
-
-    # count visible connections per voxel (each edge contributes to both endpoints)
-    # gives a 'visibility score' to each voxel based on visible counts to other voxels  
-    counts = np.bincount(edges[:, 0], minlength=n) + np.bincount(edges[:, 1], minlength=n)
     scores = counts / (n - 1)  # normalises if un-hashed
 
     # create 3D grid with dimensions defined by .npy volume size (+ 1 cell in each dimension for pyvista)
@@ -42,13 +38,16 @@ def visibility_visualiser(vol, view_type = "mip", verbose=False):
     #p.enable_depth_peeling(number_of_peels=100, occlusion_ratio=0.0)
     grid = pv.ImageData(dimensions=np.array(vol.shape) + 1)
 
-    # flatten cells for pyvista and set every cell/voxel to 0  
+    # flatten cells for pyvista (Fortran F) and set every cell/voxel to 0  
     grid.cell_data["open"] = vol.flatten(order="F")
-    score_volume = np.zeros(vol.shape, dtype=float) 
+    # float32 uses 1/2 memory to default float64
+    score_volume = np.zeros(vol.shape, dtype=np.float32, order="F") 
 
     # apply visibility scores to the cell/voxel in volume
     score_volume[tuple(coords.T)] = scores
-    grid.cell_data["voxel_visibility_score"] = score_volume.flatten(order="F")
+    #.ravel stops duplicate with .flatten as previously done
+    grid.cell_data["voxel_visibility_score"] = score_volume.ravel(order="F")
+
     grid = grid.cell_data_to_point_data() 
 
     # transparent outline of the full volume bounds for spatial context  
@@ -120,7 +119,8 @@ def visibility_visualiser(vol, view_type = "mip", verbose=False):
     t_build = time.perf_counter() - t0_build
 
     if verbose == True:
-        print(f"Open voxels: {n}, rays cast: {n_rays:,}, visible pairs: {len(edges):,}")
+        n_pairs = int(counts.sum()) // 2
+        print(f"Open voxels: {n}, rays cast: {n_rays:,}, visible pairs: {n_pairs:,}")
         print(f"Time in C++ 'hot loop': {t_cpp:.5f}s")
         print(f"Average time per ray: {t_cpp / n_rays * 1e6:.5f} µs")
         print(f"Total time before render: {t_build:.3f}s")
@@ -128,4 +128,3 @@ def visibility_visualiser(vol, view_type = "mip", verbose=False):
     # show pyvista render in window
     p.camera_position = 'zy'
     p.show()
-
