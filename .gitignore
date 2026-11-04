@@ -12,3 +12,5 @@ build/
 *.raw
 *.glb
 *.gml
+html/
+latex/
