@@ -8,8 +8,10 @@ Date started: 26-10-2026
 
 --------- current to do list -----------
 
-- set up the bfs traversal logic in `spatial.cpp` for a simple spatial network design from the volumes  
-
+- look into Dijkstra's Algorithm for diagonals (26 neighbours per voxel instead of 6)  
+- look into computing whole graph spatial values - this only takes on coordinate but could build to work across the whole graph (adjacent to the full `visibility_score()` at each voxel)  
+- try to setup surface version as an option (ecologically relevant for my phd)  
+- (eventually) set up spatial and visibility graph metrics in C++  
 -----------------e----------------------
 
 ## Goal of this project  
@@ -139,3 +141,14 @@ VOXEL RAY-CASTING RUNNING
 - also to add spatial network analysis as another .cpp file: so will redistribute the current .cpp into different ones e.g.  common.cpp (shared), visibility.cpp (current occlusion.cpp mainly), spatial.cpp (spatial network analysis) and bindings.cpp (for python bindings)  
 - did the above  
 - also added `visibility_score()` which is similar to `visible_pairs()` but does not store array of pair, so uses much, much less memory on large open volumes. only useful for the visualisation though as graph metrics still require `visible_pairs()`  
+
+## 4-11-26  
+
+- spent most of the morning and early afternoon setting up the core/primitive spatial side of `seevol` with a BFS algorithm  
+- this is breadth first search and is used in graph theory to search the shortest path of edges between two nodes  
+- `spatial.cpp` was made and i set up `bfs_distances()` which takes input of a single open voxel coordinate and runs BFS to every single other reachable open voxel in the volume + returns a Nx3 coordinate array of open voxels and N, array distances to each from theh starting voxel (distance is -1 if unreachable)  
+- this is good but BFS doesn't allow spatial movements in the diagonal as only sets neighbour as each of the outward facing 6 faces from each current voxel  
+- can look into Dijkstra's Algorithm for diagonals (26 neighbours per voxel instead of 6)  
+- and also look into computing whole graph spatial values - this only takes on coordinate but could build to work across the whole graph (adjacent to the full `visibility_score()` at each voxel)  
+- i also would like to have an option to apply spatial stuff to surface volumes only, as this is only really feasible option for ants, but also keep the full version for other uses  
+- also, as `seevol` is now two main branches: visibility and spatial, a third one to consider in the future could be airflow. a simple lattice diffusion model across the voxels could work well at scale potentially (p sure libs exist already or could build on spatial BFS anyway)    

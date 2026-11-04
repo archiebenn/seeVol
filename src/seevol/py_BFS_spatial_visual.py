@@ -39,7 +39,7 @@ def spatial_visualiser(vol, x0, y0, z0):
     p.add_volume(
         grid,
         scalars="bfs_distance",
-        cmap="turbo",
+        cmap="YlGnBu",
         blending="maximum",
         shade=False,
         opacity="linear",
