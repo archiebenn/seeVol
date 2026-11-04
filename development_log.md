@@ -131,3 +131,4 @@ VOXEL RAY-CASTING RUNNING
 - one idea is to compute proper graph analysis metrics in C++, rather than via networkx or igraph later which would probably break anyway  
 - also to add spatial network analysis as another .cpp file: so will redistribute the current .cpp into different ones e.g.  common.cpp (shared), visibility.cpp (current occlusion.cpp mainly), spatial.cpp (spatial network analysis) and bindings.cpp (for python bindings)  
 - did the above  
+- also added `visibility_score()` which is similar to `visible_pairs()` but does not store array of pair, so uses much, much less memory on large open volumes. only useful for the visualisation though as graph metrics still require `visible_pairs()`  
