@@ -156,4 +156,17 @@ VOXEL RAY-CASTING RUNNING
 ## 5-11-26
 
 - added BFS shortest path function in C++ (similar to full BFS but saves parent voxel at each step + retraces at end)  
-- implemented this as a visualiser function in python too
+- implemented this as a visualiser function in python too  
+- now here are the three current main functions of `seevol`, run an an identical 200x200x200 volume:  
+
+#### All-voxel visibility from ray traversal (Amanatides-Woo):  
+
+![200^3](https://github.com/archiebenn/wise-pears/blob/main/images/05-11-vis.png "All-voxel visibility from ray traversal (Amanatides-Woo)")
+
+#### BFS all-voxel distances from a single start voxel:  
+
+![200^3](https://github.com/archiebenn/wise-pears/blob/main/images/05-11-bfs-all.png "BFS all-voxel distances from a single start voxel")
+
+#### Shortest path between two voxels (using BFS path):  
+
+![200^3](https://github.com/archiebenn/wise-pears/blob/main/images/05-11-bfs-shortest.png "shortest path between two voxels (using BFS path)")

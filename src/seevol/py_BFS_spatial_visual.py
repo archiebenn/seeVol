@@ -55,6 +55,7 @@ def bfs_visualiser(vol, x0, y0, z0):
         line_width=1,
     )
 
+    p.add_text(f"BFS path lengths to all open voxels from start voxel ({x0, y0, z0})", font_size=12)
     p.camera_position = "zy"
     p.show()
 
@@ -101,7 +102,6 @@ def bfs_shortest_path_visualiser(vol, x0, y0, z0, x1, y1, z1):
     p.add_points(np.array([path_coords[0]], dtype=float), color="green", point_size=12, render_points_as_spheres=True)
     p.add_points(np.array([path_coords[-1]], dtype=float), color="blue", point_size=12, render_points_as_spheres=True)
 
-    p.add_text(f"Path length: {distance} voxels", font_size=12)
-
+    p.add_text(f"BFS path length from ({x0, y0, z0}) to ({x1, y1, z1})\nPath length: {distance} voxels", font_size=12)
     p.camera_position = "zy"
     p.show()

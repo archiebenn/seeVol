@@ -126,5 +126,6 @@ def visibility_visualiser(vol, view_type = "mip", verbose=False):
         print(f"Total time before render: {t_build:.3f}s")
 
     # show pyvista render in window
+    p.add_text(f"Visibility scores for every open voxel in the volume from ray tracing", font_size=12)
     p.camera_position = 'zy'
     p.show()
