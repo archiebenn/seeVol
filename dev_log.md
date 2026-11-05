@@ -156,4 +156,4 @@ VOXEL RAY-CASTING RUNNING
 ## 5-11-26
 
 - added BFS shortest path function in C++ (similar to full BFS but saves parent voxel at each step + retraces at end)  
-- implemented this as a visibility function in python too
+- implemented this as a visualiser function in python too
