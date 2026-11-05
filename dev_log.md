@@ -152,3 +152,8 @@ VOXEL RAY-CASTING RUNNING
 - and also look into computing whole graph spatial values - this only takes on coordinate but could build to work across the whole graph (adjacent to the full `visibility_score()` at each voxel)  
 - i also would like to have an option to apply spatial stuff to surface volumes only, as this is only really feasible option for ants, but also keep the full version for other uses  
 - also, as `seevol` is now two main branches: visibility and spatial, a third one to consider in the future could be airflow. a simple lattice diffusion model across the voxels could work well at scale potentially (p sure libs exist already or could build on spatial BFS anyway)    
+
+## 5-11-26
+
+- added BFS shortest path function in C++ (similar to full BFS but saves parent voxel at each step + retraces at end)  
+- implemented this as a visibility function in python too
