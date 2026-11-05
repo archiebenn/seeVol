@@ -6,7 +6,7 @@ import numpy as np
 import pyvista as pv
 import seevol
 
-def spatial_visualiser(vol, x0, y0, z0):
+def bfs_visualiser(vol, x0, y0, z0):
     """
         Takes a volume in .npy format with binary voxel values of 0 or 1 (0 = solid, 1 = open), and coordinates of a starting voxel in this volume.  
     
@@ -54,6 +54,54 @@ def spatial_visualiser(vol, x0, y0, z0):
         opacity=0.1,
         line_width=1,
     )
+
+    p.camera_position = "zy"
+    p.show()
+
+
+def bfs_shortest_path_visualiser(vol, x0, y0, z0, x1, y1, z1):
+    """
+    Takes a volume in .npy format with binary voxel values of 0 or 1 (0 = solid, 1 = open), and coordinates of a start and end voxel.
+
+    Runs the shortest_path_bfs function (written in C++ for efficiency) to compute the shortest open-voxel path between them using BFS algorithm.
+
+    Draws the full volume outline + open voxel wireframe in pyvista, with the shortest path overlaid as a line.
+    """
+
+    # run shortest path BFS algorithm
+    path_coords, distance = seevol.shortest_path_bfs(vol, x0, y0, z0, x1, y1, z1)
+
+    # create 3D grid with dimensions defined by .npy volume size (+1 cell in each dimension for pyvista)
+    p = pv.Plotter()
+    grid = pv.ImageData(dimensions=np.array(vol.shape) + 1)
+
+    # flatten cells for pyvista (Fortran order) and set every cell/voxel to 0/1 open flag
+    grid.cell_data["open"] = vol.flatten(order="F")
+    grid = grid.cell_data_to_point_data()
+
+    # add mesh for full volume outline in black (wireframe)
+    p.add_mesh(grid.outline(), color="black", line_width=1.25)
+    p.add_axes(viewport=(0, 0, 0.2, 0.2))
+
+    # add faint wireframe mesh around all open voxels for context
+    open_mesh = grid.threshold(0.5, scalars="open")
+    p.add_mesh(
+        open_mesh,
+        color="grey",
+        style="wireframe",
+        opacity=0.1,
+        line_width=1,
+    )
+
+    # draw shortest path as a red line through voxel-centre coordinates
+    line = pv.lines_from_points(path_coords.astype(float))
+    p.add_mesh(line, color="red", line_width=4)
+
+    # mark start/end voxels
+    p.add_points(np.array([path_coords[0]], dtype=float), color="green", point_size=12, render_points_as_spheres=True)
+    p.add_points(np.array([path_coords[-1]], dtype=float), color="blue", point_size=12, render_points_as_spheres=True)
+
+    p.add_text(f"Path length: {distance} voxels", font_size=12)
 
     p.camera_position = "zy"
     p.show()

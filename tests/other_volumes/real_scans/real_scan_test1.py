@@ -38,4 +38,4 @@ coords = np.argwhere(ds_vol == 1)
 # run spatial visualiser
 x,y,z = coords[100000]
 assert(ds_vol[x, y, z]) == 1
-seevol.spatial_visualiser(ds_vol, x0 =x, y0 =y, z0 =z)
+seevol.bfs_visualiser(ds_vol, x0 =x, y0 =y, z0 =z)

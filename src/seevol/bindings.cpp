@@ -4,7 +4,7 @@ bindings.cpp - pybind module for python access (voxel_cpp must match name in CMa
 
 #include "common.hpp"
 #include "visibility.hpp"
-#include "spatial.cpp"
+#include "spatial.hpp"
 
 PYBIND11_MODULE(voxel_cpp, m) {
     m.def("get_voxel_value", &get_voxel_value, "Return voxel value (0 or 1) from numpy array (3D volume)");
@@ -27,4 +27,14 @@ PYBIND11_MODULE(voxel_cpp, m) {
         pybind11::arg("y0"),
         pybind11::arg("z0"),
         "Compute spatial BFS distances from an input voxel (x0, y0, z0) to all other open voxels from 3D numpy array volume");
+
+        m.def("shortest_path_bfs", &shortest_path_bfs,
+        pybind11::arg("volume"),
+        pybind11::arg("x0"),
+        pybind11::arg("y0"),
+        pybind11::arg("z0"),
+        pybind11::arg("x1"),
+        pybind11::arg("y1"),
+        pybind11::arg("z1"),
+        "Compute spatial BFS shortes distance from a start voxel (x0, y0, z0) to an end voxel (x1, y1, z1) in a 3D numpy array volume");
 }

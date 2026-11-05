@@ -106,15 +106,20 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visible_pairs(pybind11
     // and then passed by reference (const Vol&) to is_visible
     auto accessor = volume.unchecked<3>();
 
+    // volume size in x,y,z - cached instead of calling accessor(0), etc...
+    int x_dim = accessor.shape(0);
+    int y_dim = accessor.shape(1);
+    int z_dim = accessor.shape(2);
+
     // this will hold the x,y,z coordinates of every open voxel found in the volume
     // voxel's index becomes voxel's 'id' - easier than working with coords
     std::vector<Vec3i> open_voxels;
 
     // loop over every voxel in the volume - accessor.shape<(0,1,2)> = size of volume in x,y,z axes  
     // only keep voxels which are open (== 1)
-    for (int x = 0; x < accessor.shape(0); ++x)
-        for (int y =0; y < accessor.shape(1); ++y)
-            for (int z = 0; z < accessor.shape(2); ++z)
+    for (int x = 0; x < x_dim; ++x)
+        for (int y =0; y < y_dim; ++y)
+            for (int z = 0; z < z_dim; ++z)
                 if (accessor(x,y,z) != 0)
                     // record voxel (== 1) coordinates into open_voxels  
                     open_voxels.push_back({x, y, z}); 

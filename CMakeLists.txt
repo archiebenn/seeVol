@@ -9,7 +9,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(pybind11 REQUIRED)
 
 # create module from every .cpp file
-pybind11_add_module(voxel_cpp src/seevol/visibility.cpp src/seevol/bindings.cpp)
+pybind11_add_module(voxel_cpp 
+                    src/seevol/visibility.cpp 
+                    src/seevol/spatial.cpp 
+                    src/seevol/bindings.cpp)
 
 # for multi-threading the hot loop in is_visible:
 # macOS: auto-locate Homebrew's libomp (no-op elsewhere)
