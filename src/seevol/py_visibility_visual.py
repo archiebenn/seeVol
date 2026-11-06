@@ -32,6 +32,8 @@ def visibility_visualiser(vol, view_type = "mip", verbose=False):
     n = len(coords)
     n_rays = n * (n - 1) // 2
     scores = counts / (n - 1)  # normalises if un-hashed
+    # now gamma compress the scores so low/high aren't as far visually
+    scores = scores ** 0.3 
 
     # create 3D grid with dimensions defined by .npy volume size (+ 1 cell in each dimension for pyvista)
     p = pv.Plotter()

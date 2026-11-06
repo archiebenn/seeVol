@@ -18,6 +18,11 @@ def bfs_visualiser(vol, x0, y0, z0):
     # run main BFS algorithm  
     coords, distances = seevol.bfs_distances(vol, x0, y0, z0)
 
+    # now gamma compress the distances so low/high aren't as far visually
+    # as long as not unreachable/-1 due to power error
+    mask = distances != -1
+    distances[mask] = distances[mask] ** 0.5
+
     # create 3D grid with dimensions defined by .npy volume size (+ 1 cell in each dimension for pyvista)
     p = pv.Plotter()
     grid = pv.ImageData(dimensions=np.array(vol.shape) + 1)
@@ -55,7 +60,7 @@ def bfs_visualiser(vol, x0, y0, z0):
         line_width=1,
     )
 
-    p.add_text(f"BFS path lengths to all open voxels from start voxel ({x0, y0, z0})", font_size=12)
+    p.add_text(f"BFS path lengths to all open voxels from start voxel {int(x0), int(y0), int(z0)}", font_size=12)
     p.camera_position = "zy"
     p.show()
 
@@ -69,7 +74,7 @@ def bfs_shortest_path_visualiser(vol, x0, y0, z0, x1, y1, z1):
     Draws the full volume outline + open voxel wireframe in pyvista, with the shortest path overlaid as a line.
     """
 
-    # run shortest path BFS algorithm
+    # run C++ shortest path BFS algorithm
     path_coords, distance = seevol.shortest_path_bfs(vol, x0, y0, z0, x1, y1, z1)
 
     # create 3D grid with dimensions defined by .npy volume size (+1 cell in each dimension for pyvista)
@@ -84,7 +89,7 @@ def bfs_shortest_path_visualiser(vol, x0, y0, z0, x1, y1, z1):
     p.add_mesh(grid.outline(), color="black", line_width=1.25)
     p.add_axes(viewport=(0, 0, 0.2, 0.2))
 
-    # add faint wireframe mesh around all open voxels for context
+    # add wireframe mesh around all open voxels for context
     open_mesh = grid.threshold(0.5, scalars="open")
     p.add_mesh(
         open_mesh,
@@ -95,6 +100,7 @@ def bfs_shortest_path_visualiser(vol, x0, y0, z0, x1, y1, z1):
     )
 
     # draw shortest path as a red line through voxel-centre coordinates
+    # simple transformation from C++ output of coordinates
     line = pv.lines_from_points(path_coords.astype(float))
     p.add_mesh(line, color="red", line_width=4)
 
@@ -102,6 +108,6 @@ def bfs_shortest_path_visualiser(vol, x0, y0, z0, x1, y1, z1):
     p.add_points(np.array([path_coords[0]], dtype=float), color="green", point_size=12, render_points_as_spheres=True)
     p.add_points(np.array([path_coords[-1]], dtype=float), color="blue", point_size=12, render_points_as_spheres=True)
 
-    p.add_text(f"BFS path length from ({x0, y0, z0}) to ({x1, y1, z1})\nPath length: {distance} voxels", font_size=12)
+    p.add_text(f"BFS path length from {int(x0), int(y0), int(z0)} to {int(x1), int(y1), int(z1)}\nPath length: {distance} voxels", font_size=12)
     p.camera_position = "zy"
     p.show()

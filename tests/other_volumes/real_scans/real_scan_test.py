@@ -36,6 +36,12 @@ seevol.visibility_visualiser(ds_vol, verbose=True)
 coords = np.argwhere(ds_vol == 1)
 
 # run spatial visualiser
-x,y,z = coords[100000]
+x,y,z = coords[10000]
 assert(ds_vol[x, y, z]) == 1
 seevol.bfs_visualiser(ds_vol, x0 =x, y0 =y, z0 =z)
+
+# and run BFS shortest distance
+x0,y0,z0 = coords[10000]
+x1,y1,z1 = coords[100]
+seevol.bfs_shortest_path_visualiser(ds_vol, x0=x0, y0=y0, z0=z0, x1=x1, y1=y1, z1=z1)
+
