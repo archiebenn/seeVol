@@ -17,8 +17,8 @@ print((data_dir / "BinaryROI1.dat").read_text()[:500])
 vol = vol.reshape((538, 666, 654))
 # transpose to (X, Y, Z)
 vol = vol.transpose(2, 1, 0) 
-# create bool array where non-0 = True, 0 = False, then convert that to binary 1/0  
-vol = (vol != 0).astype(np.uint8)
+# preserve non-0 scan voxels as open (0) and encode the background as solid (1)
+vol = (vol == 0).astype(np.uint8)
 
 # downscale vol  by factor - 
 factor = 3
@@ -27,21 +27,20 @@ ds_vol = vol[::factor, ::factor, ::factor]
 print(ds_vol.min()) # 0 - ideal
 print(ds_vol.max()) # 1 - ideal
 
-print("shape:", ds_vol.shape, "open voxels:", int(ds_vol.sum()))
+print("shape:", ds_vol.shape, "open voxels:", int(np.count_nonzero(ds_vol == 0)))
 
 # run visibility visualiser
 seevol.visibility_visualiser(ds_vol, verbose=True)
 
 # get open voxel coords
-coords = np.argwhere(ds_vol == 1)
+coords = np.argwhere(ds_vol == 0)
 
 # run spatial visualiser
 x,y,z = coords[10000]
-assert(ds_vol[x, y, z]) == 1
+assert(ds_vol[x, y, z] == 0)
 seevol.bfs_visualiser(ds_vol, x0 =x, y0 =y, z0 =z)
 
 # and run BFS shortest distance
 x0,y0,z0 = coords[10000]
 x1,y1,z1 = coords[100]
 seevol.bfs_shortest_path_visualiser(ds_vol, x0=x0, y0=y0, z0=z0, x1=x1, y1=y1, z1=z1)
-

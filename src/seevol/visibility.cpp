@@ -1,7 +1,8 @@
 /* 
 visibility.cpp - ray traversal to assess all-pairs voxel visibility within 3D volumes 
+Contains functions used for visibility analyses of 3D voxelised volumes
 
-Based on an algorithm from "Amanatides, J. & Woo, A. A Fast Voxel Traversal Algorithm for Ray Tracing."  
+Core line-of-sight approach is based on the algorithm from "Amanatides, J. & Woo, A. A Fast Voxel Traversal Algorithm for Ray Tracing."  
 Guide for algorithm and implementation: https://m4xc.dev/articles/amanatides-and-woo/  
 Date started: 26-10-2026  
 Author: Archie Benn sj19031@bristol.ac.uk
@@ -29,8 +30,8 @@ uint8_t get_voxel_value(pybind11::array_t<uint8_t> volume, int x, int y, int z){
 
 bool is_visible(const Vol& volume, int x0, int y0, int z0, int x1, int y1, int z1){
 
-    // only go forward if both start and end voxels == 1 i.e. open voxels  
-    if (volume(x0,y0,z0) == 0 || volume(x1,y1,z1) == 0) return false;
+    // only go forward if both start and end voxels are empty (0)
+    if (volume(x0,y0,z0) != 0 || volume(x1,y1,z1) != 0) return false;
 
     // current position (first voxel initially) and constant end voxel indices/coords
     Vec3i pos = {x0, y0, z0};
@@ -83,9 +84,9 @@ bool is_visible(const Vol& volume, int x0, int y0, int z0, int x1, int y1, int z
         }
 
         // with the current pos ('or current ray end') location, access the byte value in the volume/.npy array:
-        // if the voxel the ray is currently ending at == 0, the ray has hit a solid structure and return false
+        // if the voxel the ray is currently ending at is non-zero/1, it has hit a solid structure
         // this is **early exit**  
-        if (volume(pos.x,pos.y,pos.z) == 0) return false;
+        if (volume(pos.x,pos.y,pos.z) != 0) return false;
     }
 
     // ray has been traced from start voxel to finish voxel, so return true (line of sight is visible between pair)  
@@ -111,17 +112,17 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visible_pairs(pybind11
     int y_dim = accessor.shape(1);
     int z_dim = accessor.shape(2);
 
-    // this will hold the x,y,z coordinates of every open voxel found in the volume
+    // this will hold the x,y,z coordinates of every empty voxel found in the volume
     // voxel's index becomes voxel's 'id' - easier than working with coords
     std::vector<Vec3i> open_voxels;
 
     // loop over every voxel in the volume - accessor.shape<(0,1,2)> = size of volume in x,y,z axes  
-    // only keep voxels which are open (== 1)
+    // only keep voxels which are empty (== 0)
     for (int x = 0; x < x_dim; ++x)
         for (int y =0; y < y_dim; ++y)
             for (int z = 0; z < z_dim; ++z)
-                if (accessor(x,y,z) != 0)
-                    // record voxel (== 1) coordinates into open_voxels  
+                if (accessor(x,y,z) == 0)
+                    // record empty voxel coordinates into open_voxels
                     open_voxels.push_back({x, y, z}); 
 
     // n = total number of free/open voxels found
@@ -246,16 +247,16 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visibility_scores(pybi
     // and then passed by reference (const Vol&) to is_visible
     auto accessor = volume.unchecked<3>();
 
-    // this will hold the x,y,z coordinates of every open voxel found in the volume
+    // this will hold the x,y,z coordinates of every empty voxel found in the volume
     std::vector<Vec3i> open_voxels;
 
     // loop over every voxel in the volume - accessor.shape<(0,1,2)> = size of volume in x,y,z axes  
-    // only keep voxels which are open (== 1)
+    // only keep voxels which are empty (== 0)
     for (int x = 0; x < accessor.shape(0); ++x)
         for (int y =0; y < accessor.shape(1); ++y)
             for (int z = 0; z < accessor.shape(2); ++z)
-                if (accessor(x,y,z) != 0)
-                    // record voxel (== 1) coordinates into open_voxels  
+                if (accessor(x,y,z) == 0)
+                    // record empty voxel coordinates into open_voxels
                     open_voxels.push_back({x, y, z}); 
 
     // n = total number of free/open voxels found
@@ -348,5 +349,4 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visibility_scores(pybi
 
     return {coords, scores};
 }
-
 

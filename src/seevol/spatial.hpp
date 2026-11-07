@@ -8,9 +8,9 @@ spatial.hpp - declarations for spatial.cpp
 
 /**
  * @brief Computes a breadth-first search (BFS) of shortest-path distances (in voxel steps) from a start voxel 
- * to every reachable open voxel in a binary volume of closed (0) open (1) voxels
+ * to every reachable empty (0) voxel in a binary volume of solid (1) and empty (0) voxels
  *
- * Performs a 6-connected (voxel face-adjacent) BFS over all non zero
+ * Performs a 6-connected (voxel face-adjacent) BFS over all zero-valued
  * voxels in @p volume, starting at (@p x0, @p y0, @p z0).
  * 
  * https://www.youtube.com/watch?v=xlVX7dXLS64&t=45s provides a good background to BFS  

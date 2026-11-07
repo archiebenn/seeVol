@@ -6,7 +6,7 @@
 
 ![Build wheels](https://github.com/archiebenn/seeVol/actions/workflows/wheels.yml/badge.svg)
 
-`seevol` analyses line-of-sight visibility in 3D binary volumes, where 0 represents a solid/opaque voxel, and 1 represents open/transparent voxels. 
+`seevol` analyses line-of-sight visibility in 3D binary volumes, where 1 represents a solid/opaque voxel, and 0 represents an open/transparent voxel.
 
 The core functionality is based on the Amanatides & Woo voxel traversal algorithm <sup>1</sup> and is implemented in C++ to compute straight line visibility between pairs of open (non solid) voxels in a given volume.  
 
@@ -39,7 +39,7 @@ uv pip install seevol
 
 ## Usage
 
-The core function `visible_pairs()` accepts a 3D binary (0 = solid, 1 = open) NumPy array as input and outputs two NumPy arrays:
+The core function `visible_pairs()` accepts a 3D binary (1 = solid, 0 = open) NumPy array as input and outputs two NumPy arrays:
 
 - `coords` — shape (N, 3), the open voxel coordinates in the volume  
 - `edges` — shape (M, 2), pairs of indices into `coords` for voxels that are mutually visible  
@@ -64,11 +64,11 @@ The [quickstart example](examples/quickstart.py) creates a small volume of open 
 import numpy as np
 import seevol 
 
-# 1 = open, 0 = solid
-volume = np.ones((3, 3, 3), dtype=np.uint8)
+# 0 = open, 1 = solid
+volume = np.zeros((3, 3, 3), dtype=np.uint8)
 
 # adds an obstruction
-volume[1, 1, 1] = 0  
+volume[1, 1, 1] = 1
 
 # calculate pairwise voxel visibility
 coords, edges = seevol.visible_pairs(volume)
@@ -85,7 +85,7 @@ It prints the number of open voxels and visible pairs:
 ### Using .npy files 
 
 > [!IMPORTANT]
-> NumPy array volumes as .npy files must be 3D and contain binary values, with 0 = solid and 1 = open voxels.
+> NumPy array volumes as .npy files must be 3D and contain binary values, with 1 = solid and 0 = open voxels.
 
 To import your own 3D NumPy volume and calculate visibility as with the above example:
 
@@ -93,7 +93,7 @@ To import your own 3D NumPy volume and calculate visibility as with the above ex
 import numpy as np
 import seevol 
 
-# load your own 3D NumPy volume: 0 = solid, 1 = open
+# load your own 3D NumPy volume: 1 = solid, 0 = open
 volume = np.load("my_volume.npy")
 
 # calculate pairwise voxel visibility
@@ -132,5 +132,4 @@ Using `visibility_visualiser(plane_slicer=True)` on a 180x180x180 volume to see 
 ## References
 
 > 1. Amanatides, J., & Woo, A. (1987, August). A fast voxel traversal algorithm for ray tracing. In Eurographics (Vol. 87, No. 3, pp. 3-10).
-
 

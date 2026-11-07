@@ -5,11 +5,11 @@
 import numpy as np
 import seevol 
 
-# 1 = open, 0 = solid
-volume = np.ones((3, 3, 3), dtype=np.uint8)
+# 0 = empty, 1 = solid
+volume = np.zeros((3, 3, 3), dtype=np.uint8)
 
 # adds an obstruction
-volume[1, 1, 1] = 0  
+volume[1, 1, 1] = 1
 
 # calculate pairwise voxel visibility
 coords, edges = seevol.visible_pairs(volume)

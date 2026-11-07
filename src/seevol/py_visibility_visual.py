@@ -9,7 +9,7 @@ import seevol
 
 def visibility_visualiser(vol, view_type = "mip", verbose=False):
     """
-    Takes a volume in .npy format with binary voxel values of 0 or 1 (0 = solid, 1 = open).  
+    Takes a volume in .npy format with binary voxel values of 0 or 1 (0 = empty, 1 = solid).
 
     Runs the visibility_scores function (written in C++ for efficiency) to compute visibility scores for every open voxel in the volume.
 
@@ -19,7 +19,10 @@ def visibility_visualiser(vol, view_type = "mip", verbose=False):
     t0_build = time.perf_counter()
 
     if verbose == True:
-        print(f"Volume information: {vol.sum()} open voxels of {vol.size} ({100*vol.sum()/vol.size:.2f}%)") 
+
+        # (same as n below)
+        n_open = np.count_nonzero(vol == 0)
+        print(f"Volume information: {n_open} open voxels of {vol.size} ({100*n_open/vol.size:.2f}%)")
 
     # run main C++ Amanatides & Woo algorithm for ray tracing and visibility checking all open voxel pairs  
     t0_cpp = time.perf_counter()
@@ -37,11 +40,10 @@ def visibility_visualiser(vol, view_type = "mip", verbose=False):
 
     # create 3D grid with dimensions defined by .npy volume size (+ 1 cell in each dimension for pyvista)
     p = pv.Plotter()
-    #p.enable_depth_peeling(number_of_peels=100, occlusion_ratio=0.0)
     grid = pv.ImageData(dimensions=np.array(vol.shape) + 1)
 
-    # flatten cells for pyvista (Fortran F) and set every cell/voxel to 0  
-    grid.cell_data["open"] = vol.flatten(order="F")
+    # flatten cells for pyvista (Fortran F) and mark empty voxels
+    grid.cell_data["open"] = (vol == 0).flatten(order="F")
     # float32 uses 1/2 memory to default float64
     score_volume = np.zeros(vol.shape, dtype=np.float32, order="F") 
 
@@ -71,7 +73,7 @@ def visibility_visualiser(vol, view_type = "mip", verbose=False):
             opacity="linear",
         )
 
-        # add an open mesh around each of the 1s to highlight the full excavated volume more clearly
+        # add an open mesh to highlight the full excavated volume more clearly
         open_mesh = grid.threshold(0.5, scalars="open")
         p.add_mesh(
             open_mesh,
@@ -84,7 +86,7 @@ def visibility_visualiser(vol, view_type = "mip", verbose=False):
     # with interactive plane-slicer only render visibility at the plane slice
     elif view_type == "slices":
 
-        # add an open mesh around each of the 1s to highlight the full excavated volume more clearly
+        # add an open mesh to highlight the full excavated volume more clearly
         open_mesh = grid.threshold(0.5, scalars="open")
         p.add_mesh(
             open_mesh,
@@ -105,7 +107,7 @@ def visibility_visualiser(vol, view_type = "mip", verbose=False):
             p.camera_position = 'zy'
             p.show()
 
-            # add an open mesh around each of the 1s to highlight the full excavated volume more clearly
+            # add an open mesh to highlight the full excavated volume more clearly
             open_mesh = grid.threshold(0.5, scalars="open")
             p.add_mesh(
                 open_mesh,
@@ -116,7 +118,7 @@ def visibility_visualiser(vol, view_type = "mip", verbose=False):
                 )
 
     else:
-         print("Please select a view type for this pyvista render (see docs for more information)")
+         print("Please select a valid view type for this pyvista render (see docs for more information)")
 
     t_build = time.perf_counter() - t0_build
 

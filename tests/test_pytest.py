@@ -8,26 +8,27 @@ from itertools import combinations, product
 from fractions import Fraction
 import seevol
 
-# check 5^3 fully open/1 volume 
+# check 5^3 fully open/0 volume
 def test_open_volume_visible():
-    vol = np.ones((5, 5, 5), dtype=np.uint8)
+    vol = np.zeros((5, 5, 5), dtype=np.uint8)
     assert seevol.is_visible(vol, 0, 0, 0, 4, 4, 4)
 
-# check 5^3 with a closed/0 voxel 
+# check 5^3 with a solid/1 voxel
 def test_wall_blocks_diagonal():
-    vol = np.ones((5, 5, 5), dtype=np.uint8)
-    vol[2, 2, 2] = 0
+    vol = np.zeros((5, 5, 5), dtype=np.uint8)
+    vol[2, 2, 2] = 1
     assert not seevol.is_visible(vol, 0, 0, 0, 4, 4, 4)
     assert seevol.is_visible(vol, 0, 0, 0, 0, 0, 4)
 
 # same as above but testing main pair count function for reduction of visible pairs
 def test_wall_reduces_visible_pairs():
-    vol = np.ones((5, 5, 5), dtype=np.uint8)
-    vol2 = vol.copy(); vol2[2, 2, 2] = 0
+    vol = np.zeros((5, 5, 5), dtype=np.uint8)
+    vol2 = vol.copy(); vol2[2, 2, 2] = 1
     # number of visible pairs should drop in volume with wall 
     _, edges = seevol.visible_pairs(vol)
-    _, edges2 = seevol.visible_pairs(vol2)
+    coords2, edges2 = seevol.visible_pairs(vol2)
     assert edges2.shape[0] < edges.shape[0]
+    assert not np.any(np.all(coords2 == [2, 2, 2], axis=1))
 
 def brute_force_bounds(vol, a, b):
     """
@@ -56,7 +57,7 @@ def brute_force_bounds(vol, a, b):
 
     # loop over every voxel in the bounding box of the two endpoints
     for v in product(*[range(l, h + 1) for l, h in zip(lo_v, hi_v)]):
-        if vol[v]:
+        if vol[v] == 0:
             continue             
         t0, t1 = Fraction(0), Fraction(1) 
         inside_open = True
@@ -84,12 +85,11 @@ def test_matches_brute_force(seed):
 
     rng = np.random.default_rng(seed)
 
-    # 6^3 volume with 70% chance per voxel being set to open (1)  
-    vol = (rng.random((6, 6, 6)) > 0.3).astype(np.uint8)
+    # 6^3 volume with 30% chance per voxel being set to solid (1)
+    vol = (rng.random((6, 6, 6)) <= 0.3).astype(np.uint8)
 
-    # np.argwhere(vol) returns coordinates of non empty (i.e. open) voxels only  
-    # so open_vox is a list of tuples of coords for open voxels in volume  
-    open_vox = [tuple(int(v) for v in p) for p in np.argwhere(vol)]
+    # np.argwhere(vol == 0) returns coordinates of open voxels only
+    open_vox = [tuple(int(v) for v in p) for p in np.argwhere(vol == 0)]
 
     # every unique voxel pair, only once  
     for a, b in combinations(open_vox, 2):
@@ -106,7 +106,7 @@ def test_matches_brute_force(seed):
 def test_scores_and_edges():
     rng = np.random.default_rng(0)
     # vol about 75% open randomly allocated
-    vol = (rng.random((20, 20, 20)) > 0.25).astype(np.uint8)  
+    vol = (rng.random((20, 20, 20)) <= 0.25).astype(np.uint8)
 
     coords, edges = seevol.visible_pairs(vol)
     coords2, scores = seevol.visibility_scores(vol)

@@ -14,12 +14,12 @@ PYBIND11_MODULE(voxel_cpp, m) {
     m.def("visible_pairs", &visible_pairs, 
       pybind11::arg("volume"),
       pybind11::arg("verbose") = false,
-      "Computes all visible open voxel pairs in a volume. Returns Nx3 int array of open voxel coordinates (nodes) alongside a linked Mx2 array of visible index pairs (edges)");
+      "Computes all visible empty (0) voxel pairs in a volume. Returns Nx3 int array of empty voxel coordinates (nodes) alongside a linked Mx2 array of visible index pairs (edges)");
 
     m.def("visibility_scores", &visibility_scores, 
       pybind11::arg("volume"),
       pybind11::arg("verbose") = false,
-      "Computes visibility scores for all open voxels in a volume. Returns Nx3 int array of open voxel coordinates and n visibility scores.");
+      "Computes visibility scores for all empty (0) voxels in a volume. Returns Nx3 int array of empty voxel coordinates and n visibility scores.");
 
       m.def("bfs_distances", &bfs_distances,
         pybind11::arg("volume"),

@@ -170,3 +170,30 @@ VOXEL RAY-CASTING RUNNING
 #### Shortest path between two voxels (using BFS path):  
 
 ![200^3](https://github.com/archiebenn/wise-pears/blob/main/images/05-11-bfs-shortest.png "shortest path between two voxels (using BFS path)")
+
+
+## 7-11-26  
+
+- current cloc: 
+
+```
+cloc --exclude-lang=HTML,TeX,JavaScript,CSS .
+
+-------------------------------------------------------------------------------
+Language                     files          blank        comment           code
+-------------------------------------------------------------------------------
+C++                              4            196            309            482
+Python                          15            226            247            464
+Markdown                         3            107              0            209
+CSV                              1              0              0             44
+TOML                             1              8              0             38
+make                             1              4              0             38
+YAML                             1              6              1             35
+SVG                              1              0              0             28
+CMake                            1              5              6             25
+C/C++ Header                     3             18             80             21
+XML                              1              0              0             13
+-------------------------------------------------------------------------------
+SUM:                            32            570            643           1397
+-------------------------------------------------------------------------------
+```

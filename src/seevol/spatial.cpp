@@ -1,7 +1,10 @@
 /* 
-spatial.cpp - spatial graph analyses for voxel-based volumes 
-date started: 04-11-26
-author: Archie Benn sj19031@bristol.ac.uk
+spatial.cpp - spatial graph analyses for voxel-based volumes, using BFS and Dijkstra's algorithms  
+
+Contains functions used for spatial analyses of 3D voxelised volumes
+
+Date started: 04-11-26
+Author: Archie Benn sj19031@bristol.ac.uk
 */  
 
 #include "spatial.hpp"
@@ -24,31 +27,31 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> bfs_distances( pybind1
 
     // flattened 1D array lookup table same size as volume 
     // each entry stores index into open_voxels for that voxel
-    // all at -1 initially, and stays at -1 if closed i.e. not in open_voxels
+    // all at -1 initially, and stays at -1 if solid i.e. not in open_voxels
     std::vector<int> index_map(x_dim * y_dim * z_dim, -1);
 
     // 3d coords (x,y,z) -> single index in index_map
     // required as index_map is 1D not 3D
     auto flat = [&](int x, int y, int z) { return (x * y_dim + y) * z_dim + z; };
 
-    // this will hold the x,y,z coordinates of every open voxel found in the volume
+    // this will hold the x,y,z coordinates of every empty voxel found in the volume
     // voxel's index becomes voxel's 'id' - easier than working with coords
     std::vector<Vec3i> open_voxels;
 
     // loop over every voxel in the volume - accessor.shape<(0,1,2)> = size of volume in x,y,z axes  
-    // only keep voxels which are open (== 1)
+    // only keep voxels which are empty (== 0)
     for (int x = 0; x < x_dim; ++x)
         for (int y =0; y < y_dim; ++y)
             for (int z = 0; z < z_dim; ++z)
 
                 // if reaches an open voxel
-                if (accessor(x,y,z) != 0) {
+                if (accessor(x,y,z) == 0) {
 
                     // set voxel id to next free slot in open_voxels
                     // i.e. index_map id = current size of the open_voxels vector
                     index_map[flat(x,y,z)] = (int)open_voxels.size();
 
-                    // now actually record open voxel (== 1) coordinates into open_voxels  
+                    // now actually record empty voxel coordinates into open_voxels
                     open_voxels.push_back({x, y, z}); 
                 }
 
@@ -60,7 +63,7 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> bfs_distances( pybind1
 
     // if not an open_voxel it will still be -1 as unchanged from above loop
     if (start_idx == -1)
-        throw std::runtime_error("Start voxel is not open (1)");
+        throw std::runtime_error("Start voxel is not open (0)");
     
     // dist[i] holds BFS distance from start voxel to open_voxels[i]
     // -1 means unreachable or not reached yet 
@@ -160,31 +163,31 @@ std::pair<pybind11::array_t<int>, int> shortest_path_bfs( pybind11::array_t<uint
 
     // flattened 1D array lookup table same size as volume 
     // each entry stores index into open_voxels for that voxel
-    // all at -1 initially, and stays at -1 if closed i.e. not in open_voxels
+    // all at -1 initially, and stays at -1 if solid i.e. not in open_voxels
     std::vector<int> index_map(x_dim * y_dim * z_dim, -1);
 
     // 3d coords (x,y,z) -> single index in index_map
     // required as index_map is 1D not 3D
     auto flat = [&](int x, int y, int z) { return (x * y_dim + y) * z_dim + z; };
 
-    // this will hold the x,y,z coordinates of every open voxel found in the volume
+    // this will hold the x,y,z coordinates of every empty voxel found in the volume
     // voxel's index becomes voxel's 'id' - easier than working with coords
     std::vector<Vec3i> open_voxels;
 
     // loop over every voxel in the volume - accessor.shape<(0,1,2)> = size of volume in x,y,z axes  
-    // only keep voxels which are open (== 1)
+    // only keep voxels which are empty (== 0)
     for (int x = 0; x < x_dim; ++x)
         for (int y =0; y < y_dim; ++y)
             for (int z = 0; z < z_dim; ++z)
 
                 // if an open voxel
-                if (accessor(x,y,z) != 0) {
+                if (accessor(x,y,z) == 0) {
 
                     // set voxel id to next free slot in open_voxels
                     // i.e. index_map id = current size of the open_voxels vector
                     index_map[flat(x,y,z)] = (int)open_voxels.size();
 
-                    // now actually record open voxel (== 1) coordinates into open_voxels  
+                    // now actually record empty voxel coordinates into open_voxels
                     open_voxels.push_back({x, y, z}); 
                 }
 
@@ -197,10 +200,10 @@ std::pair<pybind11::array_t<int>, int> shortest_path_bfs( pybind11::array_t<uint
 
     // if not an open_voxel it will still be -1 as unchanged from above loop
     if (start_idx == -1)
-        throw std::runtime_error("Start voxel is not open (1)");
+        throw std::runtime_error("Start voxel is not open (0)");
     
     if (end_idx == -1)
-        throw std::runtime_error("End voxel is not open (1)");
+        throw std::runtime_error("End voxel is not open (0)");
     
     // dist[i] holds int BFS distance from start voxel to open_voxels[i]
     // -1 means unreachable or not reached yet 

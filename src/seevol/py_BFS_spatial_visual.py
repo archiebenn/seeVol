@@ -8,7 +8,7 @@ import seevol
 
 def bfs_visualiser(vol, x0, y0, z0):
     """
-        Takes a volume in .npy format with binary voxel values of 0 or 1 (0 = solid, 1 = open), and coordinates of a starting voxel in this volume.  
+        Takes a volume in .npy format with binary voxel values of 0 or 1 (0 = empty, 1 = solid), and coordinates of a starting voxel in this volume.
     
         Runs the bfs_distances function (written in C++ for efficiency) to compute distanc scores for every open voxel in the volume.
     
@@ -27,8 +27,8 @@ def bfs_visualiser(vol, x0, y0, z0):
     p = pv.Plotter()
     grid = pv.ImageData(dimensions=np.array(vol.shape) + 1)
 
-    # flatten cells for pyvista (Fortran F) and set every cell/voxel to 0
-    grid.cell_data["open"] = vol.flatten(order="F")
+    # flatten cells for pyvista (Fortran F) and mark empty voxels
+    grid.cell_data["open"] = (vol == 0).flatten(order="F")
     distance_volume = np.zeros(vol.shape, dtype=np.float32, order="F")
     distance_volume[tuple(coords.T)] = distances
 
@@ -67,7 +67,7 @@ def bfs_visualiser(vol, x0, y0, z0):
 
 def bfs_shortest_path_visualiser(vol, x0, y0, z0, x1, y1, z1):
     """
-    Takes a volume in .npy format with binary voxel values of 0 or 1 (0 = solid, 1 = open), and coordinates of a start and end voxel.
+    Takes a volume in .npy format with binary voxel values of 0 or 1 (0 = empty, 1 = solid), and coordinates of a start and end voxel.
 
     Runs the shortest_path_bfs function (written in C++ for efficiency) to compute the shortest open-voxel path between them using BFS algorithm.
 
@@ -81,8 +81,8 @@ def bfs_shortest_path_visualiser(vol, x0, y0, z0, x1, y1, z1):
     p = pv.Plotter()
     grid = pv.ImageData(dimensions=np.array(vol.shape) + 1)
 
-    # flatten cells for pyvista (Fortran order) and set every cell/voxel to 0/1 open flag
-    grid.cell_data["open"] = vol.flatten(order="F")
+    # flatten cells for pyvista (Fortran order) and mark empty voxels
+    grid.cell_data["open"] = (vol == 0).flatten(order="F")
     grid = grid.cell_data_to_point_data()
 
     # add mesh for full volume outline in black (wireframe)

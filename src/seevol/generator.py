@@ -7,21 +7,21 @@ import random
 
 def tunnel_excavator(size = 100, n_steps = 20000, branch_prob = 1e-5, radius = 1, seed=0):
     """
-    Creates empty grid volume (default volume 100^3 voxels).
+    Creates a solid grid volume (default volume 100^3 voxels) with excavated tunnels.
 
     Produces a volume with fully-connected and randomly carved tunnels within that grid volume.
     """
 
     rng = random.Random(seed)
 
-    # fill size^3 volume with 0s (represents solid/non-open e.g soil within an excavated ant nest)
-    vol = np.zeros((size,size,size), dtype=np.uint8)
+    # fill size^3 volume with 1s (represents solid/non-open e.g soil within an excavated ant nest)
+    vol = np.ones((size,size,size), dtype=np.uint8)
 
     def excavate(position):
         """
         Takes current position and excavates by the radius provided (radius = 1 -> 3x3 excavation). 
         
-        Sets 'excavated' voxel cells to 1.
+        Sets 'excavated' voxel cells to 0.
         """
 
         # get current coordinates of 'position'
@@ -30,8 +30,8 @@ def tunnel_excavator(size = 100, n_steps = 20000, branch_prob = 1e-5, radius = 1
         low = [max(0, x-radius), max(0, y-radius), max(0, z-radius)]
         high = [min(size, x + radius + 1), min(size, y + radius + 1), min(size, z + radius + 1)]
 
-        # ****actual excavation step i.e. set carved voxel(s) == 1**** 
-        vol[low[0]:high[0], low[1]:high[1], low[2]:high[2]] = 1
+        # ****actual excavation step i.e. set carved voxel(s) == 0****
+        vol[low[0]:high[0], low[1]:high[1], low[2]:high[2]] = 0
 
     # begin 'excavation' with starting position near top in centre (1 down in y plane)    
     start = (size //2, size-1, size//2)

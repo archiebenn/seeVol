@@ -21,7 +21,7 @@ uint8_t get_voxel_value(pybind11::array_t<uint8_t> volume, int x, int y, int z);
 
 
 /**
- * @brief Return if a **single** pair of voxels is visible to each other in a straight line without being occluded by a solid/0 voxel  
+ * @brief Return if a **single** pair of voxels is visible to each other in a straight line without being occluded by a solid/1 voxel
  * Using "Amanatides, J. & Woo, A. A Fast Voxel Traversal Algorithm for Ray Tracing." algorithm  
  *
  * @param volume read-only view of the 3D uint8 numpy array
@@ -41,25 +41,25 @@ bool is_visible_py(pybind11::array_t<uint8_t> volume, int x0, int y0, int z0, in
 
 
 /**
- * @brief Compute all visible pairs of free voxels in the volume for visibility graph analysis.
- * One call from Python; returns the free voxel coordinates plus the list of visible (i, j) index pairs into that array.
+ * @brief Compute all visible pairs of empty (0) voxels in the volume for visibility graph analysis.
+ * One call from Python; returns the empty voxel coordinates plus the list of visible (i, j) index pairs into that array.
  *
  * @param volume numpy 3D uint8 array data type
  * @return pair of: 
- * - N x 3 int array of free voxel coordinates
+ * - N x 3 int array of empty voxel coordinates
  * - M x 2 int array of visible index pairs
  */
 std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visible_pairs(pybind11::array_t<uint8_t> volume, bool verbose);
 
 
 /**
- * @brief Compute visibility scores for all open voxels in the volume.
+ * @brief Compute visibility scores for all empty (0) voxels in the volume.
  * Similar to visible_pairs but does not store edges: only keeps raw scores per voxel so less memory heavy.  
- * One call from Python; returns the free voxel coordinates plus the visibility score.
+ * One call from Python; returns the empty voxel coordinates plus the visibility score.
  *
  * @param volume numpy 3D uint8 array data type
  * @return pair of: 
- * - N x 3 int array of free voxel coordinates 
+ * - N x 3 int array of empty voxel coordinates
  * - N visibility scores
  */
 std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visibility_scores(pybind11::array_t<uint8_t> volume, bool verbose);
