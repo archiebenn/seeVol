@@ -202,3 +202,17 @@ XML                              1              0              0             13
 SUM:                            32            570            643           1397
 -------------------------------------------------------------------------------
 ```
+
+## 8-11-26  
+
+- updated the main code headers and some functions to add MIT and clearer function names  
+- also going to go in and clear up a lot of my comments  
+- changed claude to be less explicit in giving me answers today and more as a guide to places where i can find them/solve issues more myself, as i am concerned about using AI so much in my understanding of the code/being able to question 'why was this done?'  
+- formatted with these two commands (run whenever from root):  
+```
+# python formatting (across full repo)
+uv run ruff format .
+
+# cpp formatting (only in src/)
+find src -regex '.*\.\(cpp\|hpp\)' -exec clang-format -i {} \;
+```

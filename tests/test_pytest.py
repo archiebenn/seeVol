@@ -11,11 +11,13 @@ from itertools import combinations, product
 from fractions import Fraction
 import seevol
 
+
 # check 5^3 fully open/0 volume
 def test_open_volume_visible():
 
     vol = np.zeros((5, 5, 5), dtype=np.uint8)
     assert seevol.is_visible(vol, 0, 0, 0, 4, 4, 4)
+
 
 # check 5^3 with a solid/1 voxel
 def test_wall_blocks_diagonal():
@@ -25,17 +27,20 @@ def test_wall_blocks_diagonal():
     assert not seevol.is_visible(vol, 0, 0, 0, 4, 4, 4)
     assert seevol.is_visible(vol, 0, 0, 0, 0, 0, 4)
 
+
 # same as above but testing main pair count function for reduction of visible pairs
 def test_wall_reduces_visible_pairs():
 
     vol = np.zeros((5, 5, 5), dtype=np.uint8)
-    vol2 = vol.copy(); vol2[2, 2, 2] = 1
+    vol2 = vol.copy()
+    vol2[2, 2, 2] = 1
 
-    # number of visible pairs should drop in volume with wall 
+    # number of visible pairs should drop in volume with wall
     _, edges = seevol.visibility_graph(vol)
     coords2, edges2 = seevol.visibility_graph(vol2)
     assert edges2.shape[0] < edges.shape[0]
     assert not np.any(np.all(coords2 == [2, 2, 2], axis=1))
+
 
 def brute_force_bounds(vol, a, b):
     """
@@ -43,7 +48,7 @@ def brute_force_bounds(vol, a, b):
 
     Strict = visibility is only true if ray segment touches no solid voxel at all
 
-    Lenient = visibility can also be true if ray segment grazes corner of solid voxel 
+    Lenient = visibility can also be true if ray segment grazes corner of solid voxel
     (e.g. in exact diagonal where open voxel is adjacent to a closed voxel on the corner the ray goes through)
 
     """
@@ -58,15 +63,15 @@ def brute_force_bounds(vol, a, b):
     hi_v = [max(i, j) for i, j in zip(a, b)]
 
     # touches: segment touches a solid voxel at all (including corners/edges)
-    touches = False   
-    # crosses: segment passes through a solid voxel's interior 
-    crosses = False    
+    touches = False
+    # crosses: segment passes through a solid voxel's interior
+    crosses = False
 
     # loop over every voxel in the bounding box of the two endpoints
     for v in product(*[range(l, h + 1) for l, h in zip(lo_v, hi_v)]):
         if vol[v] == 0:
-            continue             
-        t0, t1 = Fraction(0), Fraction(1) 
+            continue
+        t0, t1 = Fraction(0), Fraction(1)
         inside_open = True
         for k in range(3):
             lo, hi = 2 * v[k], 2 * v[k] + 2
@@ -82,9 +87,10 @@ def brute_force_bounds(vol, a, b):
             touches = True
             if t0 < t1 and inside_open:
                 crosses = True
-    return not touches, not crosses  
+    return not touches, not crosses
 
-# pytest: assert that brute force and my C++ function arrive at the same results for visibility algorithm  
+
+# pytest: assert that brute force and my C++ function arrive at the same results for visibility algorithm
 # run over 15 seeds for random
 @pytest.mark.parametrize("seed", range(15))
 def test_matches_brute_force(seed):
@@ -98,16 +104,16 @@ def test_matches_brute_force(seed):
     # np.argwhere(vol == 0) returns coordinates of open voxels only
     open_vox = [tuple(int(v) for v in p) for p in np.argwhere(vol == 0)]
 
-    # every unique voxel pair, only once  
+    # every unique voxel pair, only once
     for a, b in combinations(open_vox, 2):
-
-        # lowest and higehest acceptable answers  
+        # lowest and higehest acceptable answers
         strict, lenient = brute_force_bounds(vol, a, b)
         cpp = seevol.is_visible(vol, *a, *b)
-        # assert that C++ result falls between these strict/lenient bounds  
+        # assert that C++ result falls between these strict/lenient bounds
         assert strict <= cpp <= lenient, (
             f"seed={seed} a={a} b={b} C++={cpp} strict={strict} lenient={lenient}"
         )
+
 
 # ensure that visibility_scores (memory improvements for score visualisation only) matches visible_pairs main graph
 def test_scores_and_edges():

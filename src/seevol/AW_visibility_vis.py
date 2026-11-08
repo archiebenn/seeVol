@@ -10,7 +10,8 @@ import time
 import pyvista as pv
 import seevol
 
-def visibility_vis(vol, view_type = "mip", verbose=False):
+
+def visibility_vis(vol, view_type="mip", verbose=False):
     """
     Takes a volume in .npy format with binary voxel values of 0 or 1 (0 = empty, 1 = solid).
 
@@ -22,12 +23,13 @@ def visibility_vis(vol, view_type = "mip", verbose=False):
     t0_build = time.perf_counter()
 
     if verbose == True:
-
         # (same as n below)
         n_open = np.count_nonzero(vol == 0)
-        print(f"Volume information: {n_open} open voxels of {vol.size} ({100*n_open/vol.size:.2f}%)")
+        print(
+            f"Volume information: {n_open} open voxels of {vol.size} ({100 * n_open / vol.size:.2f}%)"
+        )
 
-    # run main C++ Amanatides & Woo algorithm for ray tracing and visibility checking all open voxel pairs  
+    # run main C++ Amanatides & Woo algorithm for ray tracing and visibility checking all open voxel pairs
     t0_cpp = time.perf_counter()
     if verbose == True:
         coords, counts = seevol.visibility_scores(vol, verbose=True)
@@ -39,7 +41,7 @@ def visibility_vis(vol, view_type = "mip", verbose=False):
     n_rays = n * (n - 1) // 2
     scores = counts / (n - 1)  # normalises if un-hashed
     # now gamma compress the scores so low/high aren't as far visually
-    scores = scores ** 0.4 
+    scores = scores**0.4
 
     # create 3D grid with dimensions defined by .npy volume size (+ 1 cell in each dimension for pyvista)
     p = pv.Plotter()
@@ -48,19 +50,21 @@ def visibility_vis(vol, view_type = "mip", verbose=False):
     # flatten cells for pyvista (Fortran F) and mark empty voxels
     grid.cell_data["open"] = (vol == 0).flatten(order="F")
     # float32 uses 1/2 memory to default float64
-    score_volume = np.zeros(vol.shape, dtype=np.float32, order="F") 
+    score_volume = np.zeros(vol.shape, dtype=np.float32, order="F")
 
     # apply visibility scores to the cell/voxel in volume
     # coords.T = transposed numpy array (flip along diagonal)
-    print(coords.shape) # (n,3) = n arrays of length 3
-    print(coords.T.shape) # (3,n) - better as 3 arrays of length n and numpy expects this
+    print(coords.shape)  # (n,3) = n arrays of length 3
+    print(
+        coords.T.shape
+    )  # (3,n) - better as 3 arrays of length n and numpy expects this
     score_volume[tuple(coords.T)] = scores
 
-    #.ravel stops duplicate with .flatten as previously done
+    # .ravel stops duplicate with .flatten as previously done
     grid.cell_data["voxel_visibility_score"] = score_volume.ravel(order="F")
-    grid = grid.cell_data_to_point_data() 
+    grid = grid.cell_data_to_point_data()
 
-    # transparent outline of the full volume bounds for spatial context  
+    # transparent outline of the full volume bounds for spatial context
     p.add_mesh(grid.outline(), color="black", line_width=1.25)
 
     # add axes arrows
@@ -69,7 +73,6 @@ def visibility_vis(vol, view_type = "mip", verbose=False):
 
     # default maximum intensity projection (MIP) style ray-casting (max voxel value per ray from viewpoint)
     if view_type == "mip":
-
         p.add_volume(
             grid,
             scalars="voxel_visibility_score",
@@ -87,16 +90,12 @@ def visibility_vis(vol, view_type = "mip", verbose=False):
             style="wireframe",
             opacity=0.1,
             line_width=1,
-            )
-    
+        )
+
     # with interactive plane-slicer only render visibility at the plane slice
     elif view_type == "slices":
-
-        # add plane slider 
-        p.add_mesh_clip_plane(grid, 
-                              scalars="voxel_visibility_score", 
-                              cmap="turbo")
-                
+        # add plane slider
+        p.add_mesh_clip_plane(grid, scalars="voxel_visibility_score", cmap="turbo")
 
         # add an open mesh to highlight the full excavated volume more clearly
         open_mesh = grid.threshold(0.5, scalars="open")
@@ -106,10 +105,12 @@ def visibility_vis(vol, view_type = "mip", verbose=False):
             style="wireframe",
             opacity=0.1,
             line_width=1,
-            )
+        )
 
     else:
-         print("Please select a valid view type for this pyvista render (see docs for more information)")
+        print(
+            "Please select a valid view type for this pyvista render (see docs for more information)"
+        )
 
     t_build = time.perf_counter() - t0_build
 
@@ -121,6 +122,9 @@ def visibility_vis(vol, view_type = "mip", verbose=False):
         print(f"Total time before render: {t_build:.3f}s")
 
     # show pyvista render in window
-    p.add_text(f"Visibility scores for every open voxel in the volume from ray tracing", font_size=12)
-    p.camera_position = 'zy'
+    p.add_text(
+        f"Visibility scores for every open voxel in the volume from ray tracing",
+        font_size=12,
+    )
+    p.camera_position = "zy"
     p.show()

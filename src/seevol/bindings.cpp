@@ -5,10 +5,9 @@
 //
 // bindings.cpp - Pybind module for seeVol python access  
 
-
 #include "common.hpp"
 #include "visibility.hpp"
-#include "spatial.hpp"
+#include "spatial_BFS.hpp"
 
 PYBIND11_MODULE(voxel_cpp, m) {
     m.def("get_voxel_value", &get_voxel_value, "Return voxel value (0 or 1) from numpy array (3D volume)");

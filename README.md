@@ -62,7 +62,7 @@ The [quickstart example](examples/quickstart.py) creates a small volume of open 
 
 ```python
 import numpy as np
-import seevol 
+import seevol
 
 # 0 = open, 1 = solid
 volume = np.zeros((3, 3, 3), dtype=np.uint8)
@@ -91,7 +91,7 @@ To import your own 3D NumPy volume and calculate visibility as with the above ex
 
 ```python
 import numpy as np
-import seevol 
+import seevol
 
 # load your own 3D NumPy volume: 1 = solid, 0 = open
 volume = np.load("my_volume.npy")

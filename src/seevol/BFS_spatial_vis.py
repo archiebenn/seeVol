@@ -9,16 +9,17 @@ import numpy as np
 import pyvista as pv
 import seevol
 
+
 def bfs_all_vis(vol, x0, y0, z0):
     """
-        Takes a volume in .npy format with binary voxel values of 0 or 1 (0 = empty, 1 = solid), and coordinates of a starting voxel in this volume.
-    
-        Runs the bfs_distances function (written in C++ for efficiency) to compute distanc scores for every open voxel in the volume.
-    
-        Distance scores of open voxels are then visualised in 3D on the volume using pyvista.
-        """
+    Takes a volume in .npy format with binary voxel values of 0 or 1 (0 = empty, 1 = solid), and coordinates of a starting voxel in this volume.
 
-    # run main BFS algorithm  
+    Runs the bfs_distances function (written in C++ for efficiency) to compute distanc scores for every open voxel in the volume.
+
+    Distance scores of open voxels are then visualised in 3D on the volume using pyvista.
+    """
+
+    # run main BFS algorithm
     coords, distances = seevol.bfs_distances(vol, x0, y0, z0)
 
     # now gamma compress the distances so low/high aren't as far visually
@@ -65,7 +66,10 @@ def bfs_all_vis(vol, x0, y0, z0):
 
     # mark start voxel
     p.add_points(np.array([coords[0]], dtype=float), color="red", point_size=16)
-    p.add_text(f"BFS path lengths to all open voxels from start voxel {int(x0), int(y0), int(z0)}", font_size=12)
+    p.add_text(
+        f"BFS path lengths to all open voxels from start voxel {int(x0), int(y0), int(z0)}",
+        font_size=12,
+    )
     p.camera_position = "zy"
     p.show()
 
@@ -111,8 +115,13 @@ def bfs_shortest_vis(vol, x0, y0, z0, x1, y1, z1):
 
     # mark start/end voxels
     p.add_points(np.array([path_coords[0]], dtype=float), color="green", point_size=16)
-    p.add_points(np.array([path_coords[-1]], dtype=float), color="orange", point_size=16)
+    p.add_points(
+        np.array([path_coords[-1]], dtype=float), color="orange", point_size=16
+    )
 
-    p.add_text(f"BFS path length from {int(x0), int(y0), int(z0)} (green) to {int(x1), int(y1), int(z1)} (orange)\nPath length: {distance} voxels", font_size=12)
+    p.add_text(
+        f"BFS path length from {int(x0), int(y0), int(z0)} (green) to {int(x1), int(y1), int(z1)} (orange)\nPath length: {distance} voxels",
+        font_size=12,
+    )
     p.camera_position = "zy"
     p.show()

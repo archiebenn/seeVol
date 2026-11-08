@@ -10,16 +10,8 @@
 #include "common.hpp"
 
 
-/**
- * @brief Return voxel value (0 or 1) from numpy array (3D volume)
- * For testing C++ <-> Python indexing  
- *
- * @param volume numpy 3D uint8 array data type
- * @param x voxel index along the x axis
- * @param y voxel index along the y axis
- * @param z voxel index along the z axis
- * @return byte value of voxel from coordinates  
- */
+// For testing C++ <-> Python indexing  
+// Return voxel value (0 or 1) from numpy array (3D volume)
 uint8_t get_voxel_value(pybind11::array_t<uint8_t> volume, int x, int y, int z);
 
 

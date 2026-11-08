@@ -11,7 +11,7 @@ find_package(pybind11 REQUIRED)
 # create module from every .cpp file
 pybind11_add_module(voxel_cpp 
                     src/seevol/visibility.cpp 
-                    src/seevol/spatial.cpp 
+                    src/seevol/spatial_BFS.cpp 
                     src/seevol/bindings.cpp)
 
 # for multi-threading the hot loop in is_visible:

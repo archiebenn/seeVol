@@ -61,10 +61,10 @@ bool is_visible(const Vol& volume, int x0, int y0, int z0, int x1, int y1, int z
     tmax.y = 0.5 * delta.y;
     tmax.z = 0.5 * delta.z;
 
-    // and now to implement the actual Amanatides-Woo algorithtm:
+    // and now to implement the Amanatides-Woo algorithtm:
     while (pos.x != end.x || pos.y != end.y || pos.z != end.z){
 
-        // step on the axis where tmax is the smallest (from website guide)  
+        // step on the axis where tmax is the smallest (from https://m4xc.dev/articles/amanatides-and-woo/)  
         if (tmax.x < tmax.y) {
             if (tmax.x < tmax.z) {
                 pos.x += step.x;
@@ -83,13 +83,12 @@ bool is_visible(const Vol& volume, int x0, int y0, int z0, int x1, int y1, int z
             }
         }
 
-        // with the current pos ('or current ray end') location, access the byte value in the volume/.npy array:
         // if the voxel the ray is currently ending at is non-zero/1, it has hit a solid structure
-        // this is **early exit**  
-        if (volume(pos.x,pos.y,pos.z) != 0) return false;
+        if (volume(pos.x,pos.y,pos.z) != 0) 
+            return false; // early exit
     }
 
-    // ray has been traced from start voxel to finish voxel, so return true (line of sight is visible between pair)  
+    // ray has been traced from start voxel to finish voxel and line of sight is visible between pair  
     return true;
 
 }
@@ -152,9 +151,7 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visibility_graph(pybin
 
         // atomic long long counter (for terminal completion) - atomic means no two threads can increment at same time
         std::atomic<long long> completed{0};
-
-        // (for multithreading)
-        pybind11::gil_scoped_release release;
+        pybind11::gil_scoped_release release; // (for multithreading)
 
         // start a team of threads and each runs this block
         #pragma omp parallel
@@ -194,7 +191,6 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visibility_graph(pybin
                 // print every 2500th voxel pair completed
                 if (verbose && done % 2500 == 0) {
                     double frac = (double)done / (double)n;
-                    // how many #s to show
                     int filled = (int)(frac * 40);
                     // \r overwrites previous output and then std::flushg sends straight to terminal  
                     if (verbose) std::cout << "\r[" << std::string(filled, '#') << std::string(40 - filled, '-')
@@ -210,7 +206,6 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visibility_graph(pybin
     }  
     // ****HOT LOOP END****
 
-    // 100% completion to terminal
     if (verbose) std::cout << "\r[" << std::string(40, '#') << "] 100%\n";
     
     // threads finish in nondeterministic order, so sort to get the same output every run
@@ -219,7 +214,7 @@ std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visibility_graph(pybin
     // pack open voxel coords into an N x 3 numpy array
     auto coords = pybind11::array_t<int>({(long)n, (long)3});
     auto coords_acc = coords.mutable_unchecked<2>();
-    // for all open voxel coordinates:
+    // for all open voxels
     for (size_t i = 0; i < n; ++i) {
         coords_acc(i, 0) = open_voxels[i].x;
         coords_acc(i, 1) = open_voxels[i].y;
