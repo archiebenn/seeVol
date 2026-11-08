@@ -14,6 +14,11 @@ Date started: 26-10-2026
 - (eventually) set up spatial and visibility graph metrics in C++  
 -----------------e----------------------
 
+--------- current ideas or applications -----------
+
+- what could comparing visibility <-> spatial metrics help identify? could be a genuine metric for turtuoisity of the tunnels and nest layout  
+-----------------e----------------------
+
 ## Goal of this project  
 
 - My PhD will involve using microCT scanning of excavated ant nests to gain a 3D image of their architecture  

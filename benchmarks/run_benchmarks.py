@@ -5,7 +5,7 @@
 import csv, datetime, subprocess, time
 import numpy as np
 from pathlib import Path
-from seevol.voxel_occlusion import visible_pairs
+import seevol
 
 benchmark_dir = Path(__file__).resolve().parent
 csv_path = benchmark_dir / "benchmarks.csv"
@@ -17,7 +17,6 @@ computer_name = input()
 small_20_nest = np.load(benchmark_dir / "nest_small_bm.npy")
 small_medium_45_nest = np.load(benchmark_dir / "nest_medium_bm.npy")
 medium_100_nest = np.load(benchmark_dir / "nest_bm.npy")
-large_150_nest = np.load(benchmark_dir / "nest_large_bm.npy")
 
 # get current commit for tracking over time
 commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"],
@@ -33,7 +32,7 @@ def benchmark(name, vol, repeats=3, computer = computer_name):
     for _ in range(repeats):
         t0 = time.perf_counter()
         # run C++ hot loop
-        coords, edges = visible_pairs(vol, verbose=True)
+        coords, edges = seevol.visible_pairs(vol, verbose=True)
         times.append(time.perf_counter() - t0)
     t_cpp = min(times)
 
@@ -67,6 +66,20 @@ def benchmark(name, vol, repeats=3, computer = computer_name):
 
         w.writerow(row)
 
+# update 8-11-26 - swapped 0 and 1 logic in seevol, so need to swap these benchmark binary volumes  
+# will keep the same structure but swap over using XOR to swap 0 <-> 1 in these volumes and np.where for conditional selection in arrays
+volumes = [small_20_nest, small_medium_45_nest, medium_100_nest]
+
+def binary_swap(vol):
+
+    # with XOR operator (^): 1^1 = 0, 0^1 = 1, so can be used to swap 1 <-> 0 easily  
+    vol_swapped = np.where((vol==0)|(vol==1), vol^1, vol)
+    return vol_swapped
+
+# applying the swap
+small_20_nest = binary_swap(small_20_nest)
+small_medium_45_nest = binary_swap(small_medium_45_nest)
+medium_100_nest = binary_swap(medium_100_nest)
 
 # run benchmarks
 benchmark("small_20", small_20_nest, repeats=3)
