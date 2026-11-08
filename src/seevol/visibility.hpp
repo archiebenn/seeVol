@@ -49,7 +49,7 @@ bool is_visible_py(pybind11::array_t<uint8_t> volume, int x0, int y0, int z0, in
  * - N x 3 int array of empty voxel coordinates
  * - M x 2 int array of visible index pairs
  */
-std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visible_pairs(pybind11::array_t<uint8_t> volume, bool verbose);
+std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visibility_graph(pybind11::array_t<uint8_t> volume, bool verbose);
 
 
 /**

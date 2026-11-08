@@ -100,7 +100,7 @@ bool is_visible_py(pybind11::array_t<uint8_t> volume, int x0, int y0, int z0, in
 }
 
 
-std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visible_pairs(pybind11::array_t<uint8_t> volume, bool verbose){
+std::pair<pybind11::array_t<int>, pybind11::array_t<int>> visibility_graph(pybind11::array_t<uint8_t> volume, bool verbose){
 
     // .unchecked<3>() gives fast volume(x,y,z) access to the numpy array
     // update to is_visible (29-10-26) means that this is the only time accessor is built now

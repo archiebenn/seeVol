@@ -1,22 +1,22 @@
-from .voxel_cpp import get_voxel_value, is_visible, visible_pairs, visibility_scores, bfs_distances, shortest_path_bfs
-from .generator import tunnel_excavator
-from .py_visibility_visual import visibility_visualiser
-from .py_BFS_spatial_visual import bfs_visualiser, bfs_shortest_path_visualiser
+from .voxel_cpp import get_voxel_value, is_visible, visibility_graph, visibility_scores, bfs_distances, shortest_path_bfs
+from .generator import excavate_tunnels
+from .AW_visibility_vis import visibility_vis
+from .BFS_spatial_vis import bfs_all_vis, bfs_shortest_vis
 
 # all seevol functions
 __all__ = [
     # cpp
     "get_voxel_value",
     "is_visible",
-    "visible_pairs",
+    "visibility_graph",
     "visibility_scores",
     "bfs_distances",
     "shortest_path_bfs",
 
     # py
-    "tunnel_excavator",
-    "visibility_visualiser",
-    "bfs_visualiser",
-    "bfs_shortest_path_visualiser"
+    "excavate_tunnels",
+    "visibility_vis",
+    "bfs_all_vis",
+    "bfs_shortest_vis"
 
 ]

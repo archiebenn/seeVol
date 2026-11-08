@@ -10,11 +10,13 @@ import seevol
 
 # check 5^3 fully open/0 volume
 def test_open_volume_visible():
+
     vol = np.zeros((5, 5, 5), dtype=np.uint8)
     assert seevol.is_visible(vol, 0, 0, 0, 4, 4, 4)
 
 # check 5^3 with a solid/1 voxel
 def test_wall_blocks_diagonal():
+
     vol = np.zeros((5, 5, 5), dtype=np.uint8)
     vol[2, 2, 2] = 1
     assert not seevol.is_visible(vol, 0, 0, 0, 4, 4, 4)
@@ -22,11 +24,13 @@ def test_wall_blocks_diagonal():
 
 # same as above but testing main pair count function for reduction of visible pairs
 def test_wall_reduces_visible_pairs():
+
     vol = np.zeros((5, 5, 5), dtype=np.uint8)
     vol2 = vol.copy(); vol2[2, 2, 2] = 1
+
     # number of visible pairs should drop in volume with wall 
-    _, edges = seevol.visible_pairs(vol)
-    coords2, edges2 = seevol.visible_pairs(vol2)
+    _, edges = seevol.visibility_graph(vol)
+    coords2, edges2 = seevol.visibility_graph(vol2)
     assert edges2.shape[0] < edges.shape[0]
     assert not np.any(np.all(coords2 == [2, 2, 2], axis=1))
 
@@ -102,13 +106,14 @@ def test_matches_brute_force(seed):
             f"seed={seed} a={a} b={b} C++={cpp} strict={strict} lenient={lenient}"
         )
 
-# ensure that visibility_scores (memory improvements for visualisation only) matches visible_pairs
+# ensure that visibility_scores (memory improvements for score visualisation only) matches visible_pairs main graph
 def test_scores_and_edges():
+
     rng = np.random.default_rng(0)
-    # vol about 75% open randomly allocated
+    # vol about 75% open (0) randomly allocated
     vol = (rng.random((20, 20, 20)) <= 0.25).astype(np.uint8)
 
-    coords, edges = seevol.visible_pairs(vol)
+    coords, edges = seevol.visibility_graph(vol)
     coords2, scores = seevol.visibility_scores(vol)
     assert (coords == coords2).all()
     assert (np.bincount(edges.ravel(), minlength=len(coords)) == scores).all()

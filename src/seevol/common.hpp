@@ -7,7 +7,7 @@ common.hpp - shared helpers for seevol
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 
-// 2 structs: 3 integer and 3 double
+// 2 structs: 3d integer and 3d double
 struct Vec3i {int x, y, z;};
 struct Vec3d {double x, y, z;};
 

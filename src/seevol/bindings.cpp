@@ -11,7 +11,7 @@ PYBIND11_MODULE(voxel_cpp, m) {
 
     m.def("is_visible", &is_visible_py, "Return whether a single voxel pair has line of sight");
 
-    m.def("visible_pairs", &visible_pairs, 
+    m.def("visibility_graph", &visibility_graph, 
       pybind11::arg("volume"),
       pybind11::arg("verbose") = false,
       "Computes all visible empty (0) voxel pairs in a volume. Returns Nx3 int array of empty voxel coordinates (nodes) alongside a linked Mx2 array of visible index pairs (edges)");
