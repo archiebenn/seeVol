@@ -214,5 +214,5 @@ SUM:                            32            570            643           1397
 uv run ruff format .
 
 # cpp formatting (only in src/)
-find src -regex '.*\.\(cpp\|hpp\)' -exec clang-format -i {} \;
+find src \( -name "*.cpp" -o -name "*.hpp" \) -exec clang-format -i {} \;
 ```
