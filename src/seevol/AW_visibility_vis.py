@@ -1,6 +1,9 @@
-# visibility_visual.py - view pyvista outputs coloured by voxel visibility scores from using core Amanatides & Woo algorithm
-# date: 28-10-2026
-# author: Archie Benn sj19031@bristol.ac.uk 
+# Copyright (c) 2026 Archie Benn
+#
+# This software is licensed under the MIT License.
+# See the LICENSE file in the project root for the full license text.
+#
+# AW_visibility_vis.py - Pyvista visualisations for A&W-based visibility analyses of binary 3D volumes
 
 import numpy as np
 import time

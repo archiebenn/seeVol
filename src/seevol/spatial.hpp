@@ -1,6 +1,9 @@
-/* 
-spatial.hpp - declarations for spatial.cpp
-*/  
+// Copyright (c) 2026 Archie Benn
+//
+// This software is licensed under the MIT License.
+// See the LICENSE file in the project root for the full license text.
+//
+// spatial.hpp - Declarations for spatial.cpp
 
 #pragma once
 #include <utility>

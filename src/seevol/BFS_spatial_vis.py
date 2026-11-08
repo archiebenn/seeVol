@@ -1,6 +1,9 @@
-# py_BFS_spatial_visual.py - view pyvista outputs coloured by BFS spatial scores 
-# date: 04-11-2026
-# author: Archie Benn sj19031@bristol.ac.uk 
+# Copyright (c) 2026 Archie Benn
+#
+# This software is licensed under the MIT License.
+# See the LICENSE file in the project root for the full license text.
+#
+# BFS_spatial_vis.py - Pyvista visualisations for BFS-based spatial analyses of binary 3D volumes
 
 import numpy as np
 import pyvista as pv

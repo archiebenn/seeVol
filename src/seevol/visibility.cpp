@@ -1,12 +1,12 @@
-/* 
-visibility.cpp - ray traversal to assess all-pairs voxel visibility within 3D volumes 
-Contains functions used for visibility analyses of 3D voxelised volumes
-
-Core line-of-sight approach is based on the algorithm from "Amanatides, J. & Woo, A. A Fast Voxel Traversal Algorithm for Ray Tracing."  
-Guide for algorithm and implementation: https://m4xc.dev/articles/amanatides-and-woo/  
-Date started: 26-10-2026  
-Author: Archie Benn sj19031@bristol.ac.uk
-*/  
+// Copyright (c) 2026 Archie Benn
+//
+// This software is licensed under the MIT License.
+// See the LICENSE file in the project root for the full license text.
+//
+// visibility.cpp - Ray traversal for visibility analyses of binary 3D volumes
+//
+// Core line-of-sight approach is based on the algorithm from "Amanatides, J. & Woo, A. A Fast Voxel Traversal Algorithm for Ray Tracing."  
+// Guide for algorithm and implementation: https://m4xc.dev/articles/amanatides-and-woo/  
 
 #include "visibility.hpp"
 #include <atomic>

@@ -1,6 +1,9 @@
-# test_oracle.py - tests C++ amanatides-woo algorithm implementation and the main visible_pairs
-# date: 29-10-2026  
-# author: Archie Benn sj19031@bristol.ac.uk (+ Claude for pytest guidance)  
+# Copyright (c) 2026 Archie Benn
+#
+# This software is licensed under the MIT License.
+# See the LICENSE file in the project root for the full license text.
+#
+# test_pytest.py - Tests seeVol functions with pytest
 
 import numpy as np
 import pytest

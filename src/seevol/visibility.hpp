@@ -1,6 +1,9 @@
-/*
-visibility.hpp - declarations for visibility.cpp
-*/
+// Copyright (c) 2026 Archie Benn
+//
+// This software is licensed under the MIT License.
+// See the LICENSE file in the project root for the full license text.
+//
+//visibility.hpp - Declarations for visibility.cpp
 
 #pragma once
 #include <utility>

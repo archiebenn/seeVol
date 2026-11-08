@@ -1,6 +1,10 @@
-/*
-bindings.cpp - pybind module for python access (voxel_cpp must match name in CMakeLists.txt)  
-*/
+// Copyright (c) 2026 Archie Benn
+//
+// This software is licensed under the MIT License.
+// See the LICENSE file in the project root for the full license text.
+//
+// bindings.cpp - Pybind module for seeVol python access  
+
 
 #include "common.hpp"
 #include "visibility.hpp"

@@ -1,6 +1,9 @@
-/*
-common.hpp - shared helpers for seevol
-*/
+// Copyright (c) 2026 Archie Benn
+//
+// This software is licensed under the MIT License.
+// See the LICENSE file in the project root for the full license text.
+//
+// common.hpp - Shared C++ helpers for seeVol
 
 #pragma once
 #include <cstdint>

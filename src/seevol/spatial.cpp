@@ -1,11 +1,9 @@
-/* 
-spatial.cpp - spatial graph analyses for voxel-based volumes, using BFS and Dijkstra's algorithms  
-
-Contains functions used for spatial analyses of 3D voxelised volumes
-
-Date started: 04-11-26
-Author: Archie Benn sj19031@bristol.ac.uk
-*/  
+// Copyright (c) 2026 Archie Benn
+//
+// This software is licensed under the MIT License.
+// See the LICENSE file in the project root for the full license text.
+// 
+// spatial.cpp - Spatial analyses for binary 3D volumes, using BFS and Dijkstra's algorithms  
 
 #include "spatial.hpp"
 #include <stdexcept>

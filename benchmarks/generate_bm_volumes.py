@@ -1,6 +1,9 @@
-# benchmark_generator.py - generates benchmarking carved volumes
-# date: 28-10-2026  
-# author: Archie Benn sj19031@bristol.ac.uk 
+# Copyright (c) 2026 Archie Benn
+#
+# This software is licensed under the MIT License.
+# See the LICENSE file in the project root for the full license text.
+#
+# benchmark_generator.py - Generates carved volumes for cloned-repo algorithm benchmarking
 
 import numpy as np
 from pathlib import Path

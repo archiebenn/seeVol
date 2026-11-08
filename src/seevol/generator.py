@@ -1,6 +1,10 @@
-# generator.py - generates example volumes to simulate ant nest excavations and intricate structures
-# date: 28-10-2026  
-# author: Archie Benn sj19031@bristol.ac.uk 
+# Copyright (c) 2026 Archie Benn
+#
+# This software is licensed under the MIT License.
+# See the LICENSE file in the project root for the full license text.
+#
+# generator.py - Generates example binary NumPy volumes to simulate ant nest excavations/intricate tunnel structures
+
 
 import numpy as np
 import random
