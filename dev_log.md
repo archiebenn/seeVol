@@ -12,6 +12,7 @@ Date started: 26-10-2026
 - look into computing whole graph spatial values - this only takes on coordinate but could build to work across the whole graph (adjacent to the full `visibility_score()` at each voxel)  
 - try to setup surface version as an option (ecologically relevant for my phd)  
 - (eventually) set up spatial and visibility graph metrics in C++  
+- sopecify what outputs mean more generally i.e. visibility score for a voxel is a degree valu for that node in a graph sense  
 -----------------e----------------------
 
 --------- current ideas or applications -----------

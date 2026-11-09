@@ -15,6 +15,6 @@ volume = np.zeros((3, 3, 3), dtype=np.uint8)
 volume[1, 1, 1] = 1
 
 # calculate pairwise voxel visibility
-coords, edges = seevol.visible_pairs(volume)
+coords, edges = seevol.visibility_graph(volume)
 
 print(f"{len(coords)} open voxels containing {len(edges)} visible pairs")

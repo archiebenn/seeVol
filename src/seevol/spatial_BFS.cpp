@@ -7,6 +7,8 @@
 //
 // see https://www.youtube.com/watch?v=xlVX7dXLS64&t=45s for a great visual
 // explanation to BFS algorithm
+//
+// ! Assumes all edge weights are equal in BFS  
 
 #include "spatial_BFS.hpp"
 #include <stdexcept>
