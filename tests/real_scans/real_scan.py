@@ -8,24 +8,24 @@ data_dir = Path(__file__).resolve().parent
 vol = np.fromfile(data_dir / "BinaryROI1.raw", dtype=np.uint8)
 
 # read the .dat file for to get volume info
-print((data_dir / "BinaryROI1.dat").read_text()[:500]) 
+print((data_dir / "BinaryROI1.dat").read_text()[:500])
 # <Resolution X="654" Y="666" Z="538" T="1" />
 
 # information contained within .dat indicated these as the shape
 # reshape as (Z,Y,X), as this is the convention as data is stored X fastest, then Y, then Z
-# convention is then slowest-> fastest in reshaping (independent of any numpy stuff, this is scanner info)  
+# convention is then slowest-> fastest in reshaping (independent of any numpy stuff, this is scanner info)
 vol = vol.reshape((538, 666, 654))
 # transpose to (X, Y, Z)
-vol = vol.transpose(2, 1, 0) 
+vol = vol.transpose(2, 1, 0)
 # preserve non-0 scan voxels as open (0) and encode the background as solid (1)
 vol = (vol == 0).astype(np.uint8)
 
-# downscale vol  by factor - 
+# downscale vol  by factor -
 factor = 3
 ds_vol = vol[::factor, ::factor, ::factor]
 
-print(ds_vol.min()) # 0 - ideal
-print(ds_vol.max()) # 1 - ideal
+print(ds_vol.min())  # 0 - ideal
+print(ds_vol.max())  # 1 - ideal
 
 print("shape:", ds_vol.shape, "open voxels:", int(np.count_nonzero(ds_vol == 0)))
 
@@ -36,11 +36,11 @@ seevol.visibility_vis(ds_vol, verbose=True)
 coords = np.argwhere(ds_vol == 0)
 
 # run spatial visualiser
-x,y,z = coords[10000]
-assert(ds_vol[x, y, z] == 0)
-seevol.bfs_all_vis(ds_vol, x0 =x, y0 =y, z0 =z)
+x, y, z = coords[10000]
+assert ds_vol[x, y, z] == 0
+seevol.bfs_all_vis(ds_vol, x0=x, y0=y, z0=z)
 
 # and run BFS shortest distance
-x0,y0,z0 = coords[10000]
-x1,y1,z1 = coords[100]
+x0, y0, z0 = coords[10000]
+x1, y1, z1 = coords[100]
 seevol.bfs_shortest_vis(ds_vol, x0=x0, y0=y0, z0=z0, x1=x1, y1=y1, z1=z1)

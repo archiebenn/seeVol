@@ -7,14 +7,12 @@
 
 import numpy as np
 
+
 def binary_swap(vol):
     """
     Inverts a binary NumPy 0/1 volume for easy conversion.
     """
 
-    # with XOR operator (^): 1^1 = 0, 0^1 = 1, so can be used to swap 1 <-> 0 easily  
-    vol_swapped = np.where((vol==0)|(vol==1), vol^1, vol)
+    # with XOR operator (^): 1^1 = 0, 0^1 = 1, so can be used to swap 1 <-> 0 easily
+    vol_swapped = np.where((vol == 0) | (vol == 1), vol ^ 1, vol)
     return vol_swapped
-
-
-

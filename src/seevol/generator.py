@@ -57,7 +57,6 @@ def excavate_tunnels(size=100, n_steps=20000, branch_prob=1e-5, radius=1, seed=0
     )
 
     for _ in range(n_steps):
-
         # at every step select one random excavator head + selects new coordinates
         head_idx = rng.randrange(len(heads))
         x, y, z = heads[head_idx]
@@ -66,7 +65,6 @@ def excavate_tunnels(size=100, n_steps=20000, branch_prob=1e-5, radius=1, seed=0
 
         # only excavates if the new coordinates are within size of volume
         if 0 <= nx < size and 0 <= ny < size and 0 <= nz < size:
-            
             # excavate at new coords and update head coordinates
             excavate((nx, ny, nz))
             heads[head_idx] = (nx, ny, nz)
