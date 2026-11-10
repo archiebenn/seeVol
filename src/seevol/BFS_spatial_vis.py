@@ -65,6 +65,7 @@ def bfs_all_vis(vol, x0, y0, z0):
     )
 
     # mark start voxel
+    # T0D0: fix this as it is not marking start voxel  
     p.add_points(np.array([coords[0]], dtype=float), color="red", point_size=16)
     p.add_text(
         f"BFS path lengths to all open voxels from start voxel {int(x0), int(y0), int(z0)}",
@@ -120,7 +121,7 @@ def bfs_shortest_vis(vol, x0, y0, z0, x1, y1, z1):
     )
 
     p.add_text(
-        f"BFS path length from {int(x0), int(y0), int(z0)} (green) to {int(x1), int(y1), int(z1)} (orange)\nPath length: {distance} voxels",
+        f"BFS path length from {int(x0), int(y0), int(z0)} (green) to {int(x1), int(y1), int(z1)} (orange)\nPath length: {distance} voxel units",
         font_size=12,
     )
     p.camera_position = "zy"

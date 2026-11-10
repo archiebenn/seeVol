@@ -63,7 +63,7 @@ bfs_distances(pybind11::array_t<uint8_t> volume, int x0, int y0, int z0) {
 
   // dist[i] holds BFS distance from start voxel to open_voxels[i]
   // -1 means unreachable or not reached yet
-  std::vector<int> dist(open_voxels.size(), -1);
+  std::vector<int> dist(open_voxels.size(), -1); // set all open to -1
 
   // BFS uses a queue of ids (indices into open_voxels)
   std::queue<int> q;
@@ -129,14 +129,18 @@ bfs_distances(pybind11::array_t<uint8_t> volume, int x0, int y0, int z0) {
   auto coords = pybind11::array_t<int>({(long)n, (long)3});
   auto coords_acc = coords.mutable_unchecked<2>();
   auto distances = pybind11::array_t<int>((pybind11::ssize_t)n);
-  auto d = distances.mutable_unchecked<1>();
+  auto d_acc = distances.mutable_unchecked<1>();
 
   // for all open voxel coordinates:
   for (size_t i = 0; i < n; ++i) {
-    coords_acc(i, 0) = open_voxels[i].x;
-    coords_acc(i, 1) = open_voxels[i].y;
-    coords_acc(i, 2) = open_voxels[i].z;
-    d(i) = dist[i]; // attach distance to start voxel
+
+    // convert each back to actual coordinates
+    Vec3i v = open_voxels[i];
+    // add coordinates to coords via accessor
+    coords_acc(i, 0) = v.x;
+    coords_acc(i, 1) = v.y;
+    coords_acc(i, 2) = v.z;
+    d_acc(i) = dist[i]; // attach distances to the start voxel
   }
 
   return {coords, distances};
@@ -291,7 +295,7 @@ shortest_path_bfs(pybind11::array_t<uint8_t> volume, int x0, int y0, int z0,
   // pack path coords into an N x 3 numpy array and return this distance from
   // start <-> end
   auto path_coords = pybind11::array_t<int>({(long)path_ids.size(), (long)3});
-  auto pc = path_coords.mutable_unchecked<2>();
+  auto pc_acc = path_coords.mutable_unchecked<2>();
 
   // for every voxel on shortest path:
   for (size_t i = 0; i < path_ids.size(); ++i) {
@@ -299,9 +303,9 @@ shortest_path_bfs(pybind11::array_t<uint8_t> volume, int x0, int y0, int z0,
     // convert back to actual coordinates
     Vec3i v = open_voxels[path_ids[i]];
     // write to row i of array (x,y,z columns)
-    pc(i, 0) = v.x;
-    pc(i, 1) = v.y;
-    pc(i, 2) = v.z;
+    pc_acc(i, 0) = v.x;
+    pc_acc(i, 1) = v.y;
+    pc_acc(i, 2) = v.z;
   }
 
   return {path_coords, dist[end_idx]};

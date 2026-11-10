@@ -23,5 +23,5 @@ seevol.bfs_all_vis(example_nest, x0=x0, y0=y0, z0=z0)
 
 # view shortest path from BFS algorithm between two voxels
 x0, y0, z0 = open_coords[100]
-x1, y1, z1 = open_coords[1600]
+x1, y1, z1 = open_coords[16000]
 seevol.bfs_shortest_vis(example_nest, x0=x0, y0=y0, z0=z0, x1=x1, y1=y1, z1=z1)
