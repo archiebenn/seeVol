@@ -218,3 +218,8 @@ uv run ruff format .
 # cpp formatting (only in src/)
 find src \( -name "*.cpp" -o -name "*.hpp" \) -exec clang-format -i {} \;
 ```
+
+## 10-11-26  
+
+- added binary_swap() into src/ via a new script called helpers.py  
+- could be useful for swapping all 0/1 binary values over as i have had to for a few volumes since swapping thew 0/1 open/closed logic  
