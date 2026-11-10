@@ -11,6 +11,17 @@ from itertools import combinations, product
 from fractions import Fraction
 import seevol
 
+# test binary swap works for 0<->1 NumPy conversion
+def chech_binary_swap():
+
+    # create sample volume
+    volume = np.zeros((3, 3, 3), dtype=np.uint8)
+
+    assert volume[0,0,0] == 0
+    volume = seevol.binary_swap(volume) # invert
+    assert volume[0,0,0] == 1
+    volume = seevol.binary_swap(volume) # re-invert
+    assert volume[0,0,0] == 0
 
 # check 5^3 fully open/0 volume
 def test_open_volume_visible():
@@ -19,7 +30,7 @@ def test_open_volume_visible():
     assert seevol.is_visible(vol, 0, 0, 0, 4, 4, 4)
 
 
-# check 5^3 with a solid/1 voxel
+# check visibility of 2 voxels in 5^3 with a solid/1 voxel
 def test_wall_blocks_diagonal():
 
     vol = np.zeros((5, 5, 5), dtype=np.uint8)
@@ -50,7 +61,6 @@ def brute_force_bounds(vol, a, b):
 
     Lenient = visibility can also be true if ray segment grazes corner of solid voxel
     (e.g. in exact diagonal where open voxel is adjacent to a closed voxel on the corner the ray goes through)
-
     """
 
     # work in doubled coordinates so everything stays an integer: centre = 2i+1, voxel = [2i, 2i+2]

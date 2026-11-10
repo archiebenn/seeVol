@@ -45,8 +45,8 @@ def excavate_tunnels(size=100, n_steps=20000, branch_prob=1e-5, radius=1, seed=0
     # active excavators list - starts with just one
     heads = [starting_head]
 
-    # apply a slight -y bias for increased chance of moving down (more ant-like)
-    # change these values in each axes to adjust overall excavation shapes
+    # apply a slight -y bias for increased chance of excavating down (more ant-like)
+    # (change these values in each axes to adjust overall excavation shapes)
     moves = (
         [(1, 0, 0)] * 20  # x
         + [(-1, 0, 0)] * 20  # -x
@@ -57,14 +57,16 @@ def excavate_tunnels(size=100, n_steps=20000, branch_prob=1e-5, radius=1, seed=0
     )
 
     for _ in range(n_steps):
+
         # at every step select one random excavator head + selects new coordinates
         head_idx = rng.randrange(len(heads))
         x, y, z = heads[head_idx]
         dx, dy, dz = rng.choice(moves)
         nx, ny, nz = x + dx, y + dy, z + dz  # new head coordinates
 
-        # only excavates if the new coordinates are within size of voluem
+        # only excavates if the new coordinates are within size of volume
         if 0 <= nx < size and 0 <= ny < size and 0 <= nz < size:
+            
             # excavate at new coords and update head coordinates
             excavate((nx, ny, nz))
             heads[head_idx] = (nx, ny, nz)

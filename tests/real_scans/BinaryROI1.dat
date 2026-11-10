@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<RAWFileData>
+	<Version>1</Version>
+	<ObjectFileName>BinaryROI1.raw</ObjectFileName>
+	<Format>UCHAR</Format>
+	<DataSlope>1</DataSlope>
+	<DataOffset>0</DataOffset>
+	<Unit>Density</Unit>
+	<Resolution X="654" Y="666" Z="538" T="1" />
+	<Spacing X="0.0001669829999999999968832153918185667862417176365852356" Y="0.0001669829999999999968832153918185667862417176365852356" Z="0.0001669829999999999968832153918185667862417176365852356" />
+	<Orientation X0="1" X1="0" X2="0" Y0="0" Y1="1" Y2="0" Z0="0" Z1="0" Z2="1" />
+	<Position P1="0" P2="0" P3="0" />
+</RAWFileData>

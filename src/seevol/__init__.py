@@ -7,6 +7,7 @@ from .voxel_cpp import (
     shortest_path_bfs,
 )
 from .generator import excavate_tunnels
+from .helpers import binary_swap
 from .AW_visibility_vis import visibility_vis
 from .BFS_spatial_vis import bfs_all_vis, bfs_shortest_vis
 
@@ -20,6 +21,7 @@ __all__ = [
     "shortest_path_bfs",
     # py
     "excavate_tunnels",
+    "binary_swap",
     "visibility_vis",
     "bfs_all_vis",
     "bfs_shortest_vis",
