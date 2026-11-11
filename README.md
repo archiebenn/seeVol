@@ -12,8 +12,7 @@ The core functionality is based on the Amanatides & Woo voxel traversal algorith
 
 This tool tests visibility between **all** open pairs throughout the volume, which permits per-voxel visibility analysis metrics to be calculated downstream for every open voxel.
 
-> [!WARNING]
-> `seevol` computes all-pairs visibility, which scales as O(open_voxels<sup>2</sup>). This becomes slow or memory-limiting beyond a few hundred thousand open voxels — see [Limitations](#limitations) before running on large volumes. Downsampling the volume is likely to help but will impact results.  
+Please note: `seevol` computes all-pairs visibility, which scales as O(open_voxels<sup>2</sup>). This becomes slow or memory-limiting beyond a few hundred thousand open voxels — see Limitations section before running on large volumes. Downsampling the volume is likely to help but will impact results.  
 
 ## Requirements
 
