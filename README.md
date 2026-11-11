@@ -83,8 +83,7 @@ It prints the number of open voxels and visible pairs:
 
 ### Using .npy files 
 
-> [!IMPORTANT]
-> NumPy array volumes as .npy files must be 3D and contain binary values, with 1 = solid and 0 = open voxels.
+NumPy array volumes as .npy files must be 3D and contain binary values, with 1 = solid and 0 = open voxels.
 
 To import your own 3D NumPy volume and calculate visibility as with the above example:
 
