@@ -12,6 +12,7 @@
 
 #include "spatial_BFS.hpp"
 #include <stdexcept>
+#include <queue>
 
 std::pair<pybind11::array_t<int>, pybind11::array_t<int>>
 bfs_distances(pybind11::array_t<uint8_t> volume, int x0, int y0, int z0) {

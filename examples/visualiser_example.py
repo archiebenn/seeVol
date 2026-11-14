@@ -10,7 +10,7 @@ import seevol
 
 # create example NumPy volume with excavate_tunnels() function
 example_nest = seevol.excavate_tunnels(
-    size=300, seed=27, n_steps=40000, branch_prob=1e-5, radius=1
+    size=300, seed=78, n_steps=40000, branch_prob=1e-5, radius=1
 )
 open_coords = np.argwhere(example_nest == 0)
 
