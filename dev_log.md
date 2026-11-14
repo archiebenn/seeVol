@@ -11,8 +11,9 @@ Date started: 26-10-2026
 - fix bfs_all_vis() to actually mark starting voxel  
 - make visualiser a class? rather than set of functions for visibility/spatial etc.  
 - look into Dijkstra's Algorithm for diagonals (26 neighbours per voxel instead of 6)  
-- look into computing whole graph spatial values - this only takes on coordinate but could build to work across the whole graph (adjacent to the full `visibility_score()` at each voxel)  
 - try to setup surface version as an option (ecologically relevant for my phd)  
+- make a function to return a single voxel's visibility (so fits between current is_visible and all pairs function)  
+- look into computing whole graph spatial values - this only takes on coordinate but could build to work across the whole graph (adjacent to the full `visibility_score()` at each voxel)  
 - (eventually) set up spatial and visibility graph metrics in C++  
 - sopecify what outputs mean more generally i.e. visibility score for a voxel is a degree valu for that node in a graph sense  
 -----------------e----------------------

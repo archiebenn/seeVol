@@ -21,7 +21,7 @@ vol = vol.transpose(2, 1, 0)
 vol = (vol == 0).astype(np.uint8)
 
 # downscale vol  by factor -
-factor = 3
+factor = 2
 ds_vol = vol[::factor, ::factor, ::factor]
 
 print(ds_vol.min())  # 0 - ideal
@@ -36,11 +36,11 @@ seevol.visibility_vis(ds_vol, verbose=True)
 coords = np.argwhere(ds_vol == 0)
 
 # run spatial visualiser
-x, y, z = coords[10000]
+x, y, z = coords[1500]
 assert ds_vol[x, y, z] == 0
 seevol.bfs_all_vis(ds_vol, x0=x, y0=y, z0=z)
 
 # and run BFS shortest distance
-x0, y0, z0 = coords[10000]
+x0, y0, z0 = coords[30000]
 x1, y1, z1 = coords[100]
 seevol.bfs_shortest_vis(ds_vol, x0=x0, y0=y0, z0=z0, x1=x1, y1=y1, z1=z1)
