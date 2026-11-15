@@ -3,7 +3,7 @@
 # This software is licensed under the MIT License.
 # See the LICENSE file in the project root for the full license text.
 #
-# BFS_spatial_vis.py - Pyvista visualisations for BFS-based spatial analyses of binary 3D volumes
+# pyvista_BFS_spatial.py - Pyvista visualisations for BFS-based spatial analyses of binary 3D volumes
 
 import numpy as np
 import pyvista as pv

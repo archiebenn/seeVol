@@ -3,7 +3,7 @@
 # This software is licensed under the MIT License.
 # See the LICENSE file in the project root for the full license text.
 #
-# AW_visibility_vis.py - Pyvista visualisations for A&W-based visibility analyses of binary 3D volumes
+# pyvista_AW_visibility.py - Pyvista visualisations for A&W-based visibility analyses of binary 3D volumes
 
 import numpy as np
 import time
