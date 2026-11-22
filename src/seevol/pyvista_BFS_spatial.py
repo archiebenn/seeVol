@@ -25,7 +25,7 @@ def bfs_all_vis(vol, x0, y0, z0):
     # now gamma compress the distances so low/high aren't as far visually
     # as long as not unreachable/-1 due to power error
     mask = distances != -1
-    distances[mask] = distances[mask]**0.7
+    distances[mask] = distances[mask]**0.9
 
     # create 3D grid with dimensions defined by .npy volume size (+ 1 cell in each dimension for pyvista)
     p = pv.Plotter()
@@ -48,7 +48,7 @@ def bfs_all_vis(vol, x0, y0, z0):
     p.add_volume(
         grid,
         scalars="bfs_distance",
-        cmap="YlGn",
+        cmap="algae",
         blending="maximum",
         shade=False,
         opacity="linear",

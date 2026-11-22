@@ -54,10 +54,10 @@ def visibility_vis(vol, view_type="mip", verbose=False):
 
     # apply visibility scores to the cell/voxel in volume
     # coords.T = transposed numpy array (flip along diagonal)
-    print(coords.shape)  # (n,3) = n arrays of length 3
-    print(
-        coords.T.shape
-    )  # (3,n) - better as 3 arrays of length n and numpy expects this
+    #print(coords.shape)  # (n,3) = n arrays of length 3
+    #print(
+    #    coords.T.shape
+    #)  # (3,n) - better as 3 arrays of length n and numpy expects this
     score_volume[tuple(coords.T)] = scores
 
     # .ravel stops duplicate with .flatten as previously done

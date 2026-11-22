@@ -235,3 +235,4 @@ find src \( -name "*.cpp" -o -name "*.hpp" \) -exec clang-format -i {} \;
 
 - re-wrote README for less focus on just visibility side  
 - updating tunnel excatavor to dig differently based on condition of no. of steps head has taken  
+- this update to excavator produced tunnel structures which resemble ant nests more closely (with horixontal chambers and vertical shafts etc.)  
