@@ -41,7 +41,7 @@ def visibility_vis(vol, view_type="mip", verbose=False):
     n_rays = n * (n - 1) // 2
     scores = counts / (n - 1)  # normalises if un-hashed
     # now gamma compress the scores so low/high aren't as far visually
-    scores = scores**0.4
+    scores = scores**0.6
 
     # create 3D grid with dimensions defined by .npy volume size (+ 1 cell in each dimension for pyvista)
     p = pv.Plotter()
@@ -76,7 +76,7 @@ def visibility_vis(vol, view_type="mip", verbose=False):
         p.add_volume(
             grid,
             scalars="voxel_visibility_score",
-            cmap="turbo",
+            cmap="viridis_r",
             blending="maximum",
             shade=False,
             opacity="linear",

@@ -7,7 +7,6 @@
 
 import numpy as np
 
-
 def binary_swap(vol):
     """
     Inverts a binary NumPy 0/1 volume for easy conversion.

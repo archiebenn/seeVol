@@ -25,7 +25,7 @@ def bfs_all_vis(vol, x0, y0, z0):
     # now gamma compress the distances so low/high aren't as far visually
     # as long as not unreachable/-1 due to power error
     mask = distances != -1
-    distances[mask] = distances[mask] ** 0.5
+    distances[mask] = distances[mask]**0.7
 
     # create 3D grid with dimensions defined by .npy volume size (+ 1 cell in each dimension for pyvista)
     p = pv.Plotter()
@@ -65,8 +65,7 @@ def bfs_all_vis(vol, x0, y0, z0):
     )
 
     # mark start voxel
-    # T0D0: fix this as it is not marking start voxel
-    p.add_points(np.array([coords[0]], dtype=float), color="red", point_size=16)
+    p.add_points(np.array((x0,y0,z0), dtype=float), color="red", point_size=16)
     p.add_text(
         f"BFS path lengths to all open voxels from start voxel {int(x0), int(y0), int(z0)}",
         font_size=12,
@@ -115,9 +114,9 @@ def bfs_shortest_vis(vol, x0, y0, z0, x1, y1, z1):
     p.add_mesh(line, color="red", line_width=4)
 
     # mark start/end voxels
-    p.add_points(np.array([path_coords[0]], dtype=float), color="green", point_size=16)
+    p.add_points(np.array((x0,y0,z0), dtype=float), color="green", point_size=16)
     p.add_points(
-        np.array([path_coords[-1]], dtype=float), color="orange", point_size=16
+        np.array((x1,y1,z1), dtype=float), color="orange", point_size=16
     )
 
     p.add_text(
