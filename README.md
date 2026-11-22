@@ -6,13 +6,21 @@
 
 ![Build wheels](https://github.com/archiebenn/seeVol/actions/workflows/wheels.yml/badge.svg)
 
-`seevol` analyses line-of-sight visibility in 3D binary volumes, where 1 represents a solid/opaque voxel, and 0 represents an open/transparent voxel.
+`seevol` is a network analysis toolkit for working with binary 3D volumes, where 1 represents a solid/opaque voxel, and 0 represents an open/transparent voxel in the volume. There are currently two main aspects being developed for analysis: spatial (physical connectivity) and visibility (line-of-sight connectivity).
+
+### Spatial analysis
+
+BFS [TODO]
+
+### Visibility analysis
+
+Visibility aspect of seevol analyses line-of-sight visibility across open areas of the volume.
 
 The core functionality is based on the Amanatides & Woo voxel traversal algorithm <sup>1</sup> and is implemented in C++ to compute straight line visibility between pairs of open (non solid) voxels in a given volume.  
 
 This tool tests visibility between **all** open pairs throughout the volume, which permits per-voxel visibility analysis metrics to be calculated downstream for every open voxel.
 
-Please note: `seevol` computes all-pairs visibility, which scales as O(open_voxels<sup>2</sup>). This becomes slow or memory-limiting beyond a few hundred thousand open voxels — see Limitations section before running on large volumes. Downsampling the volume is likely to help but will impact results.  
+Please note: this involves computing all-pairs visibility, which scales as O(open_voxels<sup>2</sup>). This becomes slow or memory-limiting beyond a few hundred thousand open voxels — see Limitations section before running on large volumes. Downsampling the volume is likely to help but will impact results.  
 
 ## Requirements
 
@@ -38,7 +46,9 @@ uv pip install seevol
 
 ## Usage
 
-The core function `visible_pairs()` accepts a 3D binary (1 = solid, 0 = open) NumPy array as input and outputs two NumPy arrays:
+### Visibility analyses 
+
+The core function `visibility_graph()` accepts a 3D binary (1 = solid, 0 = open) NumPy array as input and outputs two NumPy arrays:
 
 - `coords` — shape (N, 3), the open voxel coordinates in the volume  
 - `edges` — shape (M, 2), pairs of indices into `coords` for voxels that are mutually visible  
@@ -47,7 +57,11 @@ For example, if `edges[0]` is `[2, 7]`,the visibility edge connects `coords[2]` 
 
 Users can load .npy files in Python using `np.load()` and pass the result to `visible_pairs()`.  
 
-Downstream analyses or visualisations are then possible from this output, such as visualising a 'visibility heatmap' using Pyvista (see below) 
+Downstream analyses or visualisations are then possible from this output, such as visualising a 'visibility heatmap' using Pyvista. Note, if just visualising it is preferred to use `visibility_scores()` over ther graph function, as this is much smaller in memory use but won't allow graph analysis calculations.
+
+### Spatial analyses
+
+BFS [TODO]
 
 ## Limitations  
 
@@ -95,36 +109,33 @@ import seevol
 volume = np.load("my_volume.npy")
 
 # calculate pairwise voxel visibility
-coords, edges = seevol.visible_pairs(volume)
+coords, edges = seevol.visibility_graph(volume)
 
 print(f"{len(coords)} open voxels containing {len(edges)} visible pairs")
 ```
 
 ## Visualisation examples on large volumes
 
-#### 1. Artificial 'ant nest'  
+Below examples are shown on an example 300x300x300 volume, generated using `tunnel_excavator()` to mimic an ant-nest structure and visualised with Pyvista.  
 
-Below shows an example output of the visibility score per voxel as a heatmap within an excavated tunnel system in a 150x150x150 volume, generated using `tunnel_excavator()` to mimic an ant-nest structure and visualised with Pyvista using `visibility_visualiser()`:  
+#### 1. Visibility scores
 
-![150_cubed](images/realistic_nest.png "150^3 ant excavation example volume")
+- Heatmap of line-of-sight visibility between nodes using `visibility_vis()`:   
 
-#### 2. CT scan of a male stag beetle   
+![300_cubed](images/nest_vis.png)
 
-An example using a CT scan of a male stag beetle (raw scan file downloaded from: http://klacansky.com/open-scivis-datasets/)  
+#### 2. BFS (all node)
 
-![Stag beetle](images/stag_beetle.png "CT scan stag beetle volume")
+- Heatmap of BFS distances from a starting node to all other nodes within the structure using `bfs_all_vis()`:
 
-#### 3. Artificial porous volume    
+![300_cubed](images/nest_bfs_all.png)
 
-A visibility scored volume using a generated 64x64x64 `porespy` volume:
 
-![64_cubed](images/porespy.png "64^3 porespy example volume")
+#### 3. BFS (shortest distance)
 
-#### 4. Plane slicer on an artificial 'ant nest'     
+- BFS path of shortest distance between a start and an end node within the structure using `bfs_shortest_vis()`: 
 
-Using `visibility_visualiser(plane_slicer=True)` on a 180x180x180 volume to see plane slices of visibility scores:  
-
-![180_cubed](images/plane_slicer.png "180^3 sliced example volume")
+![300_cubed](images/nest_bfs_shortest.png)
 
 
 ## References
