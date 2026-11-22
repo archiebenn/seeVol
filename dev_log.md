@@ -230,3 +230,7 @@ find src \( -name "*.cpp" -o -name "*.hpp" \) -exec clang-format -i {} \;
 
 - started working on `extract_surfaces_vis.py` from pyvista tutorials  
 - tested out with a tunnel volume -> threshold 0/1 -> apply con
+
+## 22-11-26  
+
+- re-wrote README for less focus on just visibility side  
