@@ -67,7 +67,7 @@ def visibility_vis(vol, view_type="mip", verbose=False):
     # transparent outline of the full volume bounds for spatial context
     p.add_mesh(grid.outline(), color="black", line_width=1.25)
 
-    # add axes arrows
+    # add axes arrows for context  
     viewport = (0, 0, 0.2, 0.2)
     p.add_axes(viewport=viewport)
 

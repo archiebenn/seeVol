@@ -67,7 +67,7 @@ BFS [TODO]
 
 This tool currently uses all-pair calculation using voxel ray traversal. Because of this, the ray traversal algorithm scales as O(open_voxels<sup>2</sup>) and is therefore quickly unusable for large volumes.  
 
-A hard limit is imposed in the C++ source file which limits the maximum open voxel count to 1,000,000. In reality, volumes with over 500,000 open voxels are likely to lead to OOM issues on normal computers as very large visible edges will be stored. Methods to reduce this runtime will hopefully be introduced over time.
+A hard limit is imposed in the C++ source file which limits the maximum open voxel count to 500,000. In reality, volumes with over 250,000 open voxels are likely to lead to OOM issues on normal computers as very large visible edges will be stored. Methods to reduce this runtime will hopefully be introduced over time.
 
 ## Minimal example
 

@@ -18,6 +18,7 @@
 #include <string>
 #include <vector>
 
+// pybind11::array_t<int> used as it's a C++ representation numpy array - holds pointer plus array metadata i.e a fully described numpy array
 uint8_t get_voxel_value(pybind11::array_t<uint8_t> volume, int x, int y,
                         int z) {
 
@@ -150,7 +151,7 @@ visibility_graph(pybind11::array_t<uint8_t> volume, bool verbose) {
 
   // protect the program by putting a max limit on open voxel count before
   // computing ray traversals
-  const size_t mo = 1000000;
+  const size_t mo = 500000;
 
   if (n > mo) {
     throw std::runtime_error("Too many open voxels (n = " + std::to_string(n) +

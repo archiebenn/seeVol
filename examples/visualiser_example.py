@@ -11,18 +11,18 @@ import seevol
 
 # create example NumPy volume with excavate_tunnels() function
 example_nest = seevol.excavate_tunnels(
-    size=312, n_steps=45000, seed=135, branch_prob=1e-3, radius=1
+    size=225, n_steps=50000, seed=144, branch_prob=1e-3, radius=1
 )
 open_coords = np.argwhere(example_nest == 0)
 
-# view visibility scores in pyvista window
+# visibility scores example (Amanatides & Woo algorithm)
 seevol.visibility_vis(example_nest, view_type="mip", verbose=True)
 
-# view BFS distances from start voxel(x0,y0,z0) in pyvista window
-x0, y0, z0 = open_coords[2000]
+# All voxel distances from start voxel (x0, y0, z0)  
+x0, y0, z0 = open_coords[2000] 
 seevol.bfs_all_vis(example_nest, x0=x0, y0=y0, z0=z0)
 
-# view shortest path from BFS algorithm between two voxels
+# Shortest path between two voxels (BFS algorithm)
 x0, y0, z0 = open_coords[1000]
 x1, y1, z1 = open_coords[36600]
 seevol.bfs_shortest_vis(example_nest, x0=x0, y0=y0, z0=z0, x1=x1, y1=y1, z1=z1)
